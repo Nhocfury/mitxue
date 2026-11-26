@@ -6,11 +6,12 @@
   import { go } from "../lib/router.svelte";
   import { dueCount, learnedCount } from "../lib/srs";
   import { S } from "../lib/state.svelte";
-  import { toast } from "../lib/ui.svelte";
+  import { toast, ui } from "../lib/ui.svelte";
   import { fiveMinute } from "../lib/actions";
   import { streak } from "../lib/progress";
   import { CHEST_XP, chestOpened, chestReady, isBedtime, lastDays, openChest, quests } from "../lib/motivation";
   import { todayStr } from "../lib/util";
+  import Mit from "../components/Mit.svelte";
 
   const a = nextAction();
   const due = dueCount();
@@ -35,9 +36,20 @@
 </script>
 
 <section>
-  {#if late}
+  <Mit />
+  {#if late && !/ngủ/.test(ui.mit.html)}
     <div class="card night">🌙 Khuya rồi. Giờ ngủ em đặt: <b>{S.settings.bedHour}:00 tắt màn hình</b>. Ôn vài thẻ cho xong rồi đi ngủ nha, mai học tiếp.</div>
   {/if}
+
+  <div class="card hero">
+    <div class="muted">Việc tiếp theo của em</div>
+    <button class="bigbtn" onclick={() => go(a.route)}>▶ {a.label}<small>{a.sub}</small></button>
+    <div class="quick">
+      {#if due}<button class="btn ghost" onclick={() => go("#/review")}>🔁 Ôn tập ({due})</button>{/if}
+      {#if S.pron.lessonDone || S.lastUnit}<button class="btn ghost" onclick={() => go("#/pron/learn")}>🔤 Phát âm</button>{/if}
+      <button class="btn ghost" onclick={fiveMinute}>⚡ 5 phút</button>
+    </div>
+  </div>
 
   <div class="card today">
     <div class="ring" title="Thời gian học hôm nay">
@@ -57,17 +69,6 @@
         {/each}
       </div>
       <div class="muted small">{week[6].studied ? "Hôm nay có học rồi, giữ chuỗi thành công ✓" : "Làm 1 câu bất kỳ là giữ được chuỗi hôm nay."} Mỗi tuần được nghỉ 1 ngày.</div>
-    </div>
-  </div>
-
-  <div class="card hero">
-    <div class="muted">Việc tiếp theo của em</div>
-    <button class="bigbtn" onclick={() => go(a.route)}>▶ {a.label}<small>{a.sub}</small></button>
-    <div class="row" style="justify-content:center;margin-top:12px">
-      {#if due}<button class="btn ghost" onclick={() => go("#/review")}>🔁 Ôn tập ({due})</button>{/if}
-      {#if S.pron.lessonDone || S.lastUnit}<button class="btn ghost" onclick={() => go("#/pron/learn")}>🔤 Phát âm</button>{/if}
-      <button class="btn ghost" onclick={fiveMinute}>⚡ 5 phút</button>
-      <button class="btn ghost" onclick={() => go("#/stats")}>📊 Tiến độ</button>
     </div>
   </div>
 
@@ -99,6 +100,9 @@
 
 <style>
   .small{font-size:12px}
+  .quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px}
+  .quick :global(.btn){justify-content:center}
+  .hero .bigbtn{margin-top:6px}
   .grow{flex:1;min-width:0}
   .night{background:#1d2340;color:#e6e9ff;border-color:#2e3766}
   .night b{color:#ffd76a}

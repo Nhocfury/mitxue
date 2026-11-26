@@ -42,7 +42,7 @@
     {@const c = cur}
     <div id="pcQuiz" style="margin-top:10px">
       {#key c.run}<Quiz questions={c.qs} title={PRON_COURSE[c.i].title} pass={PASS_PRON} onDone={(_s, _t, pct) => onDone(PRON_COURSE[c.i].k, pct)} {onAnswer}
-        onRestart={() => start(c.i)} nextLabel="Về khóa phát âm" onNext={() => (cur = null)} />{/key}
+        onRestart={() => start(c.i)} nextLabel="Về khóa phát âm" onNext={() => (cur = null)} focus onClose={() => (cur = null)} />{/key}
     </div>
   {/if}
 </div>

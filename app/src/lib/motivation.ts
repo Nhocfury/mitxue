@@ -6,7 +6,7 @@
 import { addXP } from "./progress";
 import { sfx } from "./sfx";
 import { S, day, save } from "./state.svelte";
-import { celebrate, say, toast, ui } from "./ui.svelte";
+import { celebrate, say, ui } from "./ui.svelte";
 import { todayStr } from "./util";
 import { who } from "./who";
 
@@ -73,7 +73,6 @@ export function checkBedtime(now = new Date()): boolean {
   if (log.bed) return false;
   log.bed = true; save();
   say(`${now.getHours() >= (bedHour() ?? 24) ? `${bedHour()} giờ` : "Quá nửa đêm"} rồi đó ${who()}. Giờ ngủ em tự đặt: <b>tắt màn hình đi ngủ</b>. Mai học tiếp, chị giữ chỗ cho :3`, "smirk");
-  toast("🌙 Tới giờ đi ngủ rồi nha");
   return true;
 }
 export function startBedtimeWatch(): void {

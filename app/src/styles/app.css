@@ -1,6 +1,6 @@
 :root{
   --red:#c8102e; --red-2:#e8384f; --red-soft:#fde8ea; --gold:#e9a90a; --gold-soft:#fff4d6;
-  --bg:#fff8f3; --card:#ffffff; --text:#2a1a1c; --muted:#8a7275; --border:#f0dcd8;
+  --bg:#fff8f3; --card:#ffffff; --text:#2a1a1c; --muted:#755d60; --border:#f0dcd8;
   --ok:#1f9d55; --ok-soft:#e3f6ea; --bad:#d64545; --bad-soft:#fde7e7; --blue:#1c7ed6; --blue-soft:#e7f2fd;
   --t1:#e03131; --t2:#2f9e44; --t3:#1c7ed6; --t4:#9c36b5; --t5:#868e96;
   --shadow:0 2px 0 rgba(200,16,46,.08);
@@ -16,22 +16,7 @@ body{margin:0;font-family:"Segoe UI",Roboto,"Noto Sans",sans-serif;background:va
 .kai{font-family:"KaiTi","STKaiti","Kaiti SC","Microsoft YaHei",serif}
 button{font:inherit;cursor:pointer;border:none;border-radius:12px}
 input,select,textarea{font:inherit}
-.wrap{max-width:1150px;margin:0 auto;padding:14px 20px 70px}
-header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.logo{font-size:26px;font-weight:700;color:var(--red);display:flex;align-items:center;gap:8px}
-.logo .seal{background:var(--red);color:#fff;border-radius:10px;padding:2px 10px;font-size:24px}
-.ver{font-size:12px;color:var(--muted);font-weight:500}
-.chips{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;align-items:center}
-.chip{background:var(--card);border:1.5px solid var(--border);border-radius:999px;padding:5px 12px;font-size:14px;display:flex;align-items:center;gap:6px}
-.xpbar{width:100px;height:8px;background:var(--red-soft);border-radius:9px;overflow:hidden}
-.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold));width:0}
-.iconbtn{background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:6px 10px}
-.mit{display:flex;gap:14px;align-items:center;background:var(--card);border:2px solid var(--border);border-radius:18px;padding:10px 16px;margin:12px 0;box-shadow:var(--shadow)}
-.bubble{flex:1;font-size:15px}
-.bubble b{color:var(--red)}
-nav{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 16px}
-nav button{background:var(--card);border:1.5px solid var(--border);color:var(--text);padding:9px 16px;font-weight:600}
-nav button.on{background:var(--red);border-color:var(--red);color:#fff}
+/* --- khung: xem phần "v1.8 layout" cuối file --- */
 .badge-n{background:var(--gold);color:#2a1a1c;border-radius:999px;padding:0 7px;font-size:12px;margin-left:2px}
 .btn{background:var(--red);color:#fff;padding:10px 18px;font-weight:600;box-shadow:0 3px 0 #8f0b20;display:inline-flex;align-items:center;gap:6px}
 .btn:active{transform:translateY(2px);box-shadow:0 1px 0 #8f0b20}
@@ -171,7 +156,7 @@ details.level.lock{opacity:.6}
 .pyfade.show{filter:none}
 .dot{width:12px;height:12px;border-radius:50%;background:var(--border,#eadcd6);display:inline-block}
 .dot.ok{background:var(--ok,#1f9d55)} .dot.cur{background:var(--red,#c8102e)}
-@media (max-width:640px){ #xptxt,.chip .xpbar{display:none} header .chips{gap:4px} .chip{padding:4px 8px;font-size:12px} .mit svg{width:34px;height:34px} }
+
 
 /* ===== v1.0 (Svelte): nút thay cho div, khối câu hỏi ===== */
 button.wcard, button.tone-card, button.card.fc { font: inherit; color: inherit; cursor: pointer; width: 100%; }
@@ -184,3 +169,86 @@ button.card.fc { min-height: 220px; display: flex; flex-direction: column; justi
 .qmainbox .muted { display: block; }
 button.tone-card { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; }
 #sCanvas { width: 100%; height: auto; max-width: 1120px; }
+
+/* ===================== v1.8 layout (UX/UI) =====================
+ * Điện thoại (< 900px): thanh trên sticky gọn, thanh tab dưới đáy cố định.
+ * Máy tính (≥ 900px): cột điều hướng trái 220px, nội dung tối đa 860px.
+ * Vùng bấm tối thiểu 44px. Chừa chỗ "tai thỏ"/thanh home bằng safe-area.
+ * ============================================================== */
+:root{--navh:calc(62px + env(safe-area-inset-bottom,0px));--sidew:0px}
+html{-webkit-text-size-adjust:100%}
+body{-webkit-tap-highlight-color:transparent}
+.wrap{max-width:860px;margin:0 auto;padding:0 14px calc(var(--navh) + 24px)}
+.btn,.iconbtn,.opt,.tok,.step,.seg button,.syl{min-height:44px}
+.btn.small{min-height:38px}
+.seal{background:var(--red);color:#fff;border-radius:9px;padding:1px 8px;font-weight:700}
+
+/* thanh trên */
+header.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;padding:8px 0;margin:0 -14px 10px;padding-left:14px;padding-right:14px;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.logo{font-size:19px;font-weight:800;color:var(--red);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.logo .seal{font-size:18px}
+.chips{display:flex;gap:6px;margin-left:auto;align-items:center}
+.chip{background:var(--card);border:1.5px solid var(--border);border-radius:999px;padding:4px 10px;font-size:14px;display:flex;align-items:center;gap:5px;min-height:36px;white-space:nowrap}
+.chip .fire{color:#f08c00;display:flex}
+.xpbar{width:46px;height:7px;background:var(--red-soft);border-radius:9px;overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold));width:0}
+#xptxt,.chip.wide{display:none}
+.iconbtn{background:var(--card);border:1.5px solid var(--border);color:var(--text);width:40px;height:40px;min-height:40px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:12px}
+@media (max-width:370px){ .logo .name{display:none} }
+html.focusing .mitpop{top:calc(70px + env(safe-area-inset-top,0px));bottom:auto}
+
+/* thanh tab dưới đáy */
+nav#nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:space-around;background:var(--card);border-top:1px solid var(--border);
+  padding:4px 4px env(safe-area-inset-bottom,0px);height:var(--navh);box-shadow:0 -4px 16px rgba(0,0,0,.05)}
+nav#nav .brand{display:none}
+nav#nav button{flex:1;max-width:110px;background:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 0;font-size:11.5px;font-weight:600;border-radius:12px;min-height:52px}
+nav#nav button .ic{position:relative;display:flex;padding:3px 14px;border-radius:99px;transition:background .15s}
+nav#nav button.on{color:var(--red)}
+nav#nav button.on .ic{background:var(--red-soft)}
+nav#nav .badge-n{position:absolute;top:-4px;right:2px;min-width:18px;height:18px;line-height:18px;text-align:center;padding:0 5px;font-size:11px;font-weight:700;border:2px solid var(--card)}
+
+/* máy tính: cột trái */
+@media (min-width:900px){
+  :root{--navh:0px;--sidew:220px}
+  .wrap{padding:0 28px 48px;margin-left:var(--sidew);max-width:calc(860px + 56px)}
+  @supports (margin-left:max(1px,1px)){ .wrap{margin-left:max(var(--sidew),calc((100vw - 916px)/2 + 110px))} }
+  header.top{margin:0 -28px 14px;padding:12px 28px}
+  header.top .logo{display:none}
+  #xptxt{display:inline}.chip.wide{display:flex}
+  .xpbar{width:80px}
+  nav#nav{top:0;right:auto;bottom:0;width:var(--sidew);height:auto;flex-direction:column;justify-content:flex-start;gap:4px;padding:18px 12px;border-top:none;border-right:1px solid var(--border);box-shadow:none}
+  nav#nav .brand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:800;color:var(--red);padding:4px 10px 18px}
+  nav#nav button{flex:none;max-width:none;flex-direction:row;justify-content:flex-start;gap:12px;font-size:15px;padding:8px 10px;min-height:46px;color:var(--text)}
+  nav#nav button .ic{padding:0}
+  nav#nav button:hover{background:var(--red-soft)}
+  nav#nav button.on{background:var(--red-soft);color:var(--red)}
+  nav#nav button.on .ic{background:none}
+  nav#nav .badge-n{top:-8px;right:-10px}
+}
+
+/* Mít */
+.mit{display:flex;gap:10px;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:8px 12px;margin:0 0 12px;box-shadow:var(--shadow)}
+.bubble{flex:1;font-size:14px}
+.bubble b{color:var(--red)}
+.mitpop{position:fixed;left:12px;right:12px;bottom:calc(var(--navh) + 12px);z-index:85;margin:0 auto;max-width:520px;text-align:left;color:var(--text);
+  box-shadow:0 10px 30px rgba(0,0,0,.18);animation:popin .3s cubic-bezier(.2,1.4,.4,1)}
+@media (min-width:900px){ .mitpop{left:auto;right:24px;bottom:24px} }
+@keyframes popin{from{transform:translateY(20px);opacity:0}}
+
+/* toast nổi trên thanh tab */
+.toast{bottom:calc(var(--navh) + 16px);max-width:calc(100vw - 32px);text-align:center}
+
+/* thẻ, chữ */
+.card{padding:16px;border-radius:18px}
+.card h2{font-size:19px;line-height:1.3}
+h2,h3{text-wrap:balance}
+@media (max-width:640px){
+  .card{padding:14px}
+  .g3:has(> .wcard){grid-template-columns:1fr 1fr;gap:8px}
+  .wcard{flex-direction:column;gap:2px;padding:10px;align-items:flex-start}
+  .wcard .zh{font-size:28px;min-width:0;text-align:left}
+  .wcard .py{font-size:15px}
+  .opts{grid-template-columns:1fr 1fr}
+}
+html.focusing,html.focusing body{overflow:hidden}

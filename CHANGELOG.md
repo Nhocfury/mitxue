@@ -1,5 +1,20 @@
 # Lịch sử phiên bản
 
+## 1.8.0 (27/11/2026): Giao diện dễ dùng hơn trên điện thoại và máy tính
+
+Tham khảo: Duolingo (thanh tab dưới đáy, màn làm bài tập trung), bản clone "Lingo" (sanidhyy/duolingo-clone: cột trái trên máy tính, thanh trên trên điện thoại), HSK Cards (tnm/hsk), hướng dẫn thiết kế cho vùng ngón cái.
+
+- **Điện thoại**: điều hướng chuyển xuống **thanh tab dưới đáy** (Hôm nay · Lộ trình · Ôn tập · Từ điển · Tiến độ), thanh trên gọn còn 1 dòng, dính khi cuộn. Phần đầu trang từ ~330px còn ~57px.
+- **Máy tính**: **cột điều hướng bên trái**, nội dung ở giữa rộng tối đa 860px cho dễ đọc.
+- **Chế độ tập trung khi làm bài** (luyện nhanh, luyện tập, kiểm tra, ôn tập, thi tổng, khóa phát âm): phủ kín màn hình, thanh tiến độ + nút ✕ ở trên, nút "Câu tiếp" ở đáy, đáy đổi xanh/đỏ theo đúng/sai. Bấm ✕ giữa bài thì hỏi lại 1 lần; phím Esc cũng thoát.
+- **Mít**: thẻ riêng ở Hôm nay; màn khác chỉ hiện bong bóng nổi vài giây khi Mít vừa nói (bấm để ẩn). Bỏ thông báo ngủ bị trùng.
+- **Bài học**: tiêu đề gọn với nút ‹ ›, mục tiêu bài gập được, các bước thành thanh cuộn ngang dính trên cùng.
+- **Từ điển**: danh sách thẻ thay cho bảng (hết tràn ngang trên điện thoại).
+- **Tiến độ, Ôn tập**: ô số liệu xếp lưới 2–3 cột; giải thích FSRS gập lại.
+- Thẻ từ mới 2 cột trên điện thoại; đáp án trắc nghiệm 2 cột.
+- Bộ icon nét tự vẽ thống nhất (`components/Icon.svelte`); vùng bấm ≥ 44px; chữ phụ đậm hơn cho dễ đọc.
+- Test mới `tests/e2e/ux_check.py` (12 kiểm): không tràn ngang ở 360px, thanh tab ở đáy, chế độ tập trung, cột trái trên máy tính.
+
 ## 1.7.0 (27/11/2026): Cho nhóm ~10 người
 
 - **Màn chào lần đầu**: tạo tài khoản bằng **tên + mật khẩu** (kèm mục tiêu phút/ngày, giờ nhắc ngủ) hoặc **đăng nhập** để lấy tiến độ từ máy khác. Có thể bỏ qua, chỉ học trên máy này.

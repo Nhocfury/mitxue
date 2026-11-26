@@ -71,6 +71,7 @@
   <div class="card" id="vqBox">
     {#key quizRun}
       <Quiz questions={qs} title="Luyện nhanh phần {vc + 1}" pass={PASS_CHUNK} {onDone} onRestart={() => { passed = false; quizRun++; }}
+        focus onClose={() => { if (passed) nextChunk(); else quizRun = 0; }}
         nextLabel={passed ? ((st.vc ?? 0) >= N ? "Qua bước Chữ Hán →" : "Phần tiếp →") : "Làm lại"} onNext={nextChunk} />
     {/key}
   </div>

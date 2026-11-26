@@ -16,10 +16,19 @@ export const ui = $state({
   welcome: false,
   /** Đã tải bản app mới, chờ em tải lại trang. */
   update: false,
+  /** Mít vừa nói ở màn khác Hôm nay: hiện bong bóng nổi vài giây (Hôm nay có thẻ Mít riêng). */
+  mitPop: false,
 });
 
 /** Mít nói. `html` chỉ chứa chuỗi do app tự viết (có thể có <b>), không bao giờ là dữ liệu người dùng. */
-export function say(html: string, mood: Mood = "normal"): void { ui.mit = { html, mood }; }
+let popTimer: ReturnType<typeof setTimeout> | undefined;
+export function say(html: string, mood: Mood = "normal"): void {
+  ui.mit = { html, mood };
+  ui.mitPop = true;
+  clearTimeout(popTimer);
+  popTimer = setTimeout(() => (ui.mitPop = false), 7000);
+}
+export function hideMit(): void { ui.mitPop = false; }
 
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
 export function toast(msg: string): void {

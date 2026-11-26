@@ -33,18 +33,18 @@
 </script>
 
 <section>
-  <div class="grid g4">{#each tiles as [a, b]}<div class="stat"><div class="n">{b}</div><div class="muted">{a}</div></div>{/each}</div>
+  <div class="tiles">{#each tiles as [a, b]}<div class="stat"><div class="n">{b}</div><div class="muted">{a}</div></div>{/each}</div>
   <div class="card" style="margin-top:14px"><h2>Tiến độ theo cấp</h2>
     {#each LEVELS as lv}
       {@const n = unitCount(lv)}{@const ws = wordsOfLevel(lv)}{@const d = unitsDoneIn(lv)}
-      <div class="row" style="margin:8px 0"><b style="width:70px">HSK {lv}</b><div class="bar"><i style="width:{(d / n) * 100}%;background:var(--red)"></i></div>
-        <span style="width:260px">{d}/{n} bài · {ws.filter(w => S.srs[w.key]).length}/{ws.length} từ {#if levelPassed(lv)}· <b style="color:var(--ok)">ĐẠT</b>{/if}</span></div>
+      <div class="lvrow"><b>HSK {lv}</b><div class="bar"><i style="width:{(d / n) * 100}%;background:var(--red)"></i></div>
+        <span class="muted">{d}/{n} bài · {ws.filter(w => S.srs[w.key]).length}/{ws.length} từ {#if levelPassed(lv)}· <b style="color:var(--ok)">ĐẠT</b>{/if}</span></div>
     {/each}
   </div>
   <div class="grid g2">
     <div class="card"><h2>Nghe thanh điệu</h2>
       {#each [1, 2, 3, 4] as t}{@const [c, n] = S.tones[t] || [0, 0]}{@const p = n ? Math.round((c / n) * 100) : 0}
-        <div class="row" style="margin:8px 0"><b class="c{t}" style="width:70px">Thanh {t}</b><div class="bar"><i style="width:{p}%;background:var(--t{t})"></i></div><span style="width:90px;text-align:right">{n ? `${p}% (${n})` : "chưa làm"}</span></div>
+        <div class="lvrow"><b class="c{t}">Thanh {t}</b><div class="bar"><i style="width:{p}%;background:var(--t{t})"></i></div><span class="muted">{n ? `${p}% (${n})` : "chưa làm"}</span></div>
       {/each}
     </div>
     <div class="card"><h2>8 tuần gần nhất</h2>
@@ -68,3 +68,14 @@
     </div>
   </div>
 </section>
+
+<style>
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+  .tiles :global(.stat){background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:10px 8px}
+  .tiles :global(.stat .n){font-size:24px;line-height:1.2}
+  .tiles :global(.stat .muted){font-size:13px}
+  .lvrow{display:grid;grid-template-columns:72px 1fr auto;gap:10px;align-items:center;margin:8px 0}
+  .lvrow span{font-size:13px;text-align:right}
+  @media (max-width:520px){ .tiles{grid-template-columns:1fr 1fr} .lvrow{grid-template-columns:64px 1fr} .lvrow span{grid-column:2;text-align:left;margin-top:-6px} }
+  .heat{max-width:none}
+</style>

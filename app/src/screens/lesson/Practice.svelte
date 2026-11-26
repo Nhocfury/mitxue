@@ -40,7 +40,7 @@
   <div class="card" id="pBody">
     {#key c.run}
       <Quiz questions={c.qs} title={sets[c.i].name} pass={PASS_SET} onDone={(_s, _t, pct) => done(sets[c.i].name, pct)}
-        onRestart={() => start(c.i)} nextLabel="Về danh sách bài tập" onNext={() => { cur = null; scrollTo({ top: 0 }); }} />
+        onRestart={() => start(c.i)} focus onClose={() => (cur = null)} nextLabel="Về danh sách bài tập" onNext={() => { cur = null; scrollTo({ top: 0 }); }} />
     {/key}
   </div>
 {/if}

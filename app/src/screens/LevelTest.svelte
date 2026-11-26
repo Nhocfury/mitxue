@@ -27,6 +27,6 @@
     {#if S.levels[lv]?.best}<p class="muted">Điểm cao nhất: {S.levels[lv].best}%</p>{/if}
     {#if !run}<button class="btn" id="ltStart" onclick={start}>Bắt đầu</button>{/if}
   </div>
-  {#if run}<div class="card" id="ltBody">{#key run}<Quiz questions={qs} title="Thi tổng HSK {lv}" pass={PASS_LEVEL} {onDone} onRestart={start} nextLabel="Về lộ trình" onNext={() => go("#/road")} />{/key}</div>{/if}
+  {#if run}<div class="card" id="ltBody">{#key run}<Quiz questions={qs} title="Thi tổng HSK {lv}" pass={PASS_LEVEL} {onDone} onRestart={start} focus onClose={() => (run = 0)} nextLabel="Về lộ trình" onNext={() => go("#/road")} />{/key}</div>{/if}
 </section>
 {/if}

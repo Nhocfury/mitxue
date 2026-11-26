@@ -11,6 +11,7 @@
   import Practice from "./Practice.svelte";
   import UnitTest from "./UnitTest.svelte";
   import Vocab from "./Vocab.svelte";
+  import Icon from "../../components/Icon.svelte";
 
   let { lv, u, step }: { lv: number; u: number; step?: string } = $props();
   const open = unitOpen(lv, u);
@@ -21,27 +22,31 @@
   if (open) { S.lastUnit = { lv, u }; save(); }
   else { toast("Bài này chưa mở khóa"); go("#/road"); }
   const goStep = (k: StepKey) => go({ name: "lesson", lv, u, step: k });
+  let bar: HTMLDivElement | undefined = $state();
+  $effect(() => { bar?.querySelector<HTMLElement>(".step.on")?.scrollIntoView({ inline: "center", block: "nearest" }); });
 </script>
 
 {#if open}
 <section>
-  <div class="card">
-    <div class="row between">
-      <div>
-        <div class="muted">HSK {lv} · Bài {u}/{unitCount(lv)}</div>
-        <h2 style="margin:2px 0">{unitTitle(lv, u)}</h2>
-        {#if L}<div class="muted">{L.topic}</div>{/if}
-      </div>
-      <div class="row">
-        <button class="btn ghost small" disabled={u <= 1} onclick={() => go({ name: "lesson", lv, u: u - 1 })}>← Bài trước</button>
-        <button class="btn ghost small" disabled={u >= unitCount(lv) || !unitOpen(lv, u + 1)} onclick={() => go({ name: "lesson", lv, u: u + 1 })}>Bài sau →</button>
-      </div>
+  <div class="lhead">
+    <button class="iconbtn" aria-label="Bài trước" title="Bài trước" disabled={u <= 1} onclick={() => go({ name: "lesson", lv, u: u - 1 })}><Icon name="left" /></button>
+    <div class="lt">
+      <div class="muted">HSK {lv} · Bài {u}/{unitCount(lv)}</div>
+      <h2>{unitTitle(lv, u)}</h2>
     </div>
-    {#if L}<div class="info"><b>Học xong bài này em sẽ:</b><ul style="margin:4px 0">{#each L.goals as g}<li>{g}</li>{/each}</ul></div>{/if}
+    <button class="iconbtn" aria-label="Bài sau" title="Bài sau" disabled={u >= unitCount(lv) || !unitOpen(lv, u + 1)} onclick={() => go({ name: "lesson", lv, u: u + 1 })}><Icon name="right" /></button>
   </div>
-  <div class="steps">
+  {#if L}
+    <details class="goals" open={!st || !Object.values(st.steps).some(Boolean)}>
+      <summary><b>🎯 Học xong bài này em sẽ…</b> <span class="muted">{L.topic}</span></summary>
+      <ul>{#each L.goals as g}<li>{g}</li>{/each}</ul>
+    </details>
+  {/if}
+  <div class="steps" role="tablist" bind:this={bar}>
     {#each steps as k, i}
-      <button class="step" class:on={cur === k} class:ok={st?.steps[k]} onclick={() => goStep(k)}>{st?.steps[k] ? "✓ " : ""}{"①②③④⑤⑥"[i]} {STEP_NAMES[k]}</button>
+      <button class="step" role="tab" aria-selected={cur === k} class:on={cur === k} class:ok={st?.steps[k]} onclick={() => goStep(k)}>
+        <span class="num">{st?.steps[k] && cur !== k ? "✓" : i + 1}</span>{STEP_NAMES[k]}
+      </button>
     {/each}
   </div>
   <div id="stepBody">
@@ -54,3 +59,24 @@
   </div>
 </section>
 {/if}
+
+<style>
+  .lhead{display:flex;align-items:center;gap:10px;margin:4px 0 10px}
+  .lt{flex:1;min-width:0;text-align:center}
+  .lt h2{margin:0;font-size:20px;line-height:1.25}
+  .lhead .iconbtn:disabled{opacity:.35;cursor:default}
+  .goals{background:var(--blue-soft);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:14px}
+  .goals summary{cursor:pointer;list-style:none;display:flex;gap:6px;flex-wrap:wrap;align-items:baseline}
+  .goals summary::-webkit-details-marker{display:none}
+  .goals summary::after{content:"▾";margin-left:auto;color:var(--muted)}
+  .goals[open] summary::after{content:"▴"}
+  .goals ul{margin:6px 0 0;padding-left:20px}
+  .steps{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -14px 12px;padding:2px 14px 4px;scroll-snap-type:x proximity;
+    position:sticky;top:57px;z-index:30;background:var(--bg)}
+  .steps::-webkit-scrollbar{display:none}
+  .step{flex:none;display:flex;align-items:center;gap:6px;scroll-snap-align:center;white-space:nowrap;border-radius:99px;padding:6px 14px 6px 6px}
+  .num{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--bg);border:1.5px solid var(--border);font-size:13px}
+  .step.on .num{background:#fff;color:var(--red);border-color:#fff}
+  .step.ok:not(.on) .num{background:var(--ok);color:#fff;border-color:var(--ok)}
+  @media (min-width:900px){ .steps{margin:0 0 12px;padding:2px 0 4px;top:65px} }
+</style>

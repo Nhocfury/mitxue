@@ -1,6 +1,6 @@
 {
   "name": "mitxue",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Mít Xué – app học tiếng Trung HSK 1→5 (offline, mở bằng file://)",
   "scripts": {
     "dev": "vite",

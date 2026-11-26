@@ -32,6 +32,6 @@
 </div>
 {#if run}
   <div class="card" id="tBody">
-    {#key run}<Quiz questions={qs} title="Kiểm tra" pass={PASS_UNIT} {onDone} onRestart={start} nextLabel="Về lộ trình" onNext={() => go("#/road")} />{/key}
+    {#key run}<Quiz questions={qs} title="Kiểm tra" pass={PASS_UNIT} {onDone} onRestart={start} focus onClose={() => (run = 0)} nextLabel="Về lộ trình" onNext={() => go("#/road")} />{/key}
   </div>
 {/if}

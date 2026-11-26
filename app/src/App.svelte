@@ -1,4 +1,7 @@
-<!-- Khung app: thanh trên, Mít, thanh điều hướng, màn hình theo địa chỉ, hộp thoại, thông báo. -->
+<!-- Khung app.
+     Điện thoại: thanh trên gọn (sticky) + nội dung + thanh tab dưới đáy.
+     Máy tính (≥ 900px): cột điều hướng bên trái + nội dung ở giữa.
+     Mít: thẻ riêng ở Hôm nay; màn khác chỉ hiện bong bóng nổi khi Mít vừa nói. -->
 <script lang="ts">
   import TopBar from "./components/TopBar.svelte";
   import Mit from "./components/Mit.svelte";
@@ -22,10 +25,9 @@
   const r = $derived(router.route);
 </script>
 
+<Nav />
 <div class="wrap">
   <TopBar />
-  <Mit />
-  <Nav />
   <main id="main">
     {#key router.n}
       {#if r.name === "home"}<Home />
@@ -41,6 +43,7 @@
     {/key}
   </main>
 </div>
+{#if ui.mitPop && r.name !== "home" && !ui.welcome}<Mit pop />{/if}
 <Modal />
 <Toast />
 <Celebrate />
@@ -50,5 +53,5 @@
 {/if}
 
 <style>
-  .upd{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:95;background:var(--red);color:#fff;border:none;border-radius:99px;padding:10px 18px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer}
+  .upd{position:fixed;left:50%;bottom:calc(var(--navh) + 16px);transform:translateX(-50%);z-index:95;background:var(--red);color:#fff;border:none;border-radius:99px;padding:10px 18px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer;min-height:44px}
 </style>

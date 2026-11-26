@@ -66,6 +66,5 @@ export function startRouter(): void {
 /** Tab nào ở thanh điều hướng đang sáng. */
 export function navTab(r: Route): string {
   if (r.name === "lesson" || r.name === "levelTest" || r.name === "pron" || r.name === "story") return "road";
-  if (r.name === "stats") return "home";
   return r.name;
 }

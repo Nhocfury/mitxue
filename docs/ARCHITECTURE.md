@@ -117,6 +117,16 @@ sequenceDiagram
 - Bản trên mạng là PWA: `public/manifest.webmanifest`, `public/sw.js` (vỏ app theo phiên bản build, audio/bộ chấm lưu dần), `public/_headers`.
 - Cách đưa lên: `docs/DEPLOY.md`.
 
+## 1e. Bố cục giao diện (v1.8)
+
+- `App.svelte`: `<Nav>` + `.wrap` (`<TopBar>` + `<main>`). Bố cục đổi bằng CSS trong `styles/app.css`, phần "v1.8 layout":
+  - **< 900px (điện thoại)**: `nav#nav` cố định dưới đáy, cao `--navh`; `header.top` dính trên cùng.
+  - **≥ 900px (máy tính)**: `nav#nav` thành cột trái rộng `--sidew` (220px); `--navh` = 0.
+  - Thứ gì nổi ở đáy (toast, bong bóng Mít, nút có bản mới) đều cộng `var(--navh)` để không bị thanh tab che.
+- **Chế độ tập trung**: `<Quiz focus onClose={…}>` → khung `position:fixed` phủ màn hình, thêm class `focusing` vào `<html>` để khóa cuộn nền. Không truyền `focus` thì Quiz nằm trong trang như cũ (dùng cho kiểm tra nhanh trong Ngữ pháp, truyện, luyện nghe).
+- **Mít**: `say()` đặt `ui.mit` + bật `ui.mitPop` 7 giây. Hôm nay vẽ `<Mit />`; màn khác vẽ `<Mit pop />` khi `ui.mitPop`.
+- Icon: `components/Icon.svelte` (`<Icon name="home" />`), thêm icon = thêm 1 dòng path 24×24.
+
 ## 2. Bên trong app: các lớp (layers)
 
 Code app chia 3 lớp, lớp trên chỉ gọi lớp dưới, không gọi ngược:
