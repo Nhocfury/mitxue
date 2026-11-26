@@ -1,0 +1,9 @@
+MIT XUE v1.0 - hoc tieng Trung HSK 1-5
+
+1. Bam doi "MO MIT XUE.bat": app mo bang Microsoft Edge.
+   Nen dung Edge vi Edge co giong doc tieng Trung tu nhien (can co mang) de doc cau.
+2. Icon ngoai Desktop: chuot phai "MO MIT XUE.bat" -> Show more options -> Send to -> Desktop (create shortcut).
+
+Lan dau ghi am, trinh duyet hoi quyen micro: bam Allow.
+Tien do luu trong trinh duyet. Moi tuan vao Cai dat -> "Tai file sao luu" de giu tien do.
+Ma nguon + tai lieu: thu muc MitXue-code (doc docs\ARCHITECTURE.md).
