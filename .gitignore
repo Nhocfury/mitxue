@@ -1,7 +1,6 @@
 node_modules/
 app/dist/
 content/.sources/
-app/public/audio/
 app/tests/e2e/shots/
 app/.vite/
 __pycache__/
