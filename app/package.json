@@ -1,6 +1,6 @@
 {
   "name": "mitxue",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Mít Xué – app học tiếng Trung HSK 1→5 (offline, mở bằng file://)",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,8 @@
     "test": "vitest run",
     "e2e": "python3 tests/e2e/run_e2e.py && python3 tests/e2e/audio_check.py && python3 tests/e2e/pron_check.py",
     "all": "npm run check && npm test && npm run build && npm run e2e",
-    "build:pron": "node scripts/build-pron.mjs"
+    "build:pron": "node scripts/build-pron.mjs",
+    "e2e:web": "python3 tests/e2e/sync_check.py && python3 tests/e2e/pwa_check.py"
   },
   "devDependencies": {
     "@sherpaw/asr": "0.3.0",

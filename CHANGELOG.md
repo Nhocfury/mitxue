@@ -1,5 +1,14 @@
 # Lịch sử phiên bản
 
+## 1.6.0 (27/11/2026): Đồng bộ + sẵn sàng lên mạng
+
+- **Đồng bộ nhiều máy** (Cài đặt → 🔄): tạo mã đồng bộ, quét QR trên điện thoại là nối. Không cần tài khoản.
+  Gộp tiến độ an toàn: 2 máy học offline cùng lúc rồi đồng bộ vẫn đủ XP, thẻ ôn, bài đã xong.
+- XP giờ đếm theo từng máy (`xpBy`) để cộng đúng khi đồng bộ; dữ liệu cũ tự chuyển.
+- API đồng bộ: Cloudflare Pages Functions + KV (`app/functions/api/sync.js`).
+- **PWA**: cài lên màn hình điện thoại, có icon 学, mất mạng vẫn mở app và nghe lại audio đã nghe.
+- Hướng dẫn đưa lên mạng: `docs/DEPLOY.md`. Test mới: `npm run e2e:web` (giả lập Cloudflare).
+
 ## 1.5.0 (27/11/2026): Máy chấm phát âm
 
 - **Đọc to có máy chấm**: nút 🎙️ ở từng câu hội thoại và câu hỏi "đọc to" trong bài kiểm tra. Em đọc xong im 1 giây là tự dừng; mỗi chữ tô **xanh** (đúng), **vàng** (sai thanh), **đỏ** (sai âm), gạch (thiếu), kèm "em: …" là máy nghe ra gì và lời nhận xét cụ thể.

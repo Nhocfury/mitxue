@@ -17,3 +17,7 @@ if (!isTestMode()) startBedtimeWatch();   // test tự động chạy lúc nào 
 exposeDebug();
 if (!isTestMode()) startSync();
 mount(App, { target: document.getElementById("app")! });
+
+// Bản trên mạng: đăng ký service worker (cài như app, học offline). Bản file:// bỏ qua.
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1"))
+  navigator.serviceWorker.register("./sw.js").catch(() => { /* không sao: app vẫn chạy bình thường */ });

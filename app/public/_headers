@@ -1,0 +1,18 @@
+# Cloudflare Pages: cách trình duyệt lưu đệm từng loại file
+/sw.js
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
+/app/*
+  Cache-Control: no-cache
+/data/*
+  Cache-Control: no-cache
+/audio/*
+  Cache-Control: public, max-age=604800
+/pron/*
+  Cache-Control: public, max-age=86400
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin

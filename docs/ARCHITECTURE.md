@@ -92,6 +92,31 @@ flowchart LR
 - **Đạt** (SpeakView): từ 1–2 chữ phải đúng hết, dài hơn ≥ 80%. Luôn có nút tự chấm (máy có thể nghe nhầm / micro hỏng).
 - Số liệu, lý do chọn mô hình, giới hạn: `docs/PRON-ASR.md`. Đóng gói lại: `npm run build:pron`.
 
+## 1d. Đồng bộ nhiều máy + bản trên mạng
+
+```mermaid
+sequenceDiagram
+  participant A as Máy A (app)
+  participant API as /api/sync (Pages Function)
+  participant KV as Workers KV
+  A->>API: GET (X-Sync-Key: mã)
+  API->>KV: đọc s:sha256(mã)
+  API-->>A: {rev, state}
+  A->>A: mergeState(máy A, bản mạng)
+  A->>API: PUT {baseRev: rev, state: đã gộp}
+  alt rev vẫn vậy
+    API->>KV: ghi rev+1
+  else máy khác vừa ghi
+    API-->>A: 409 + bản mới → gộp lại, gửi lại
+  end
+```
+
+- `lib/merge.ts`: phép gộp giao hoán, lũy đẳng, không mất tiến độ (thẻ ôn: ôn nhiều hơn thắng; bài/cấp: xong ở đâu cũng tính; XP: theo máy `xpBy`, tổng = cộng; cài đặt: `settingsAt` mới nhất).
+- `lib/sync.svelte.ts`: mã đồng bộ (100 bit), lúc mở app + sau khi lưu (gom ≥ 2 phút) + khi ẩn tab. Link `?sync=MÃ` (mã QR) tự nối.
+- `functions/api/sync.js`: Cloudflare Pages Function, KV binding `SYNC`, CORS mở cho bản `file://`.
+- Bản trên mạng là PWA: `public/manifest.webmanifest`, `public/sw.js` (vỏ app theo phiên bản build, audio/bộ chấm lưu dần), `public/_headers`.
+- Cách đưa lên: `docs/DEPLOY.md`.
+
 ## 2. Bên trong app: các lớp (layers)
 
 Code app chia 3 lớp, lớp trên chỉ gọi lớp dưới, không gọi ngược:
@@ -247,6 +272,9 @@ mitxue/                         ← repo git
 | `pronscore.ts` | Chấm từng âm tiết từ token pinyin nghe được (biến điệu, thanh nhẹ, 儿 hóa) | `scorePron`, `buildTarget` |
 | `asr.svelte.ts` | Nạp bộ máy chấm (lazy), trạng thái nạp | `ensureEngine`, `recognizePinyin`, `asr` |
 | `mic.ts` | Ghi âm, đo mức, tự dừng, đổi về 16 kHz | `Recorder`, `to16k` |
+| `merge.ts` | Gộp tiến độ 2 máy (an toàn, không mất dữ liệu) | `mergeState`, `pickCard`, `sameProgress` |
+| `sync.svelte.ts` | Đồng bộ qua `/api/sync`, mã đồng bộ, tự đồng bộ | `syncNow`, `connect`, `startSync`, `newCode` |
+| `config.ts` | Địa chỉ bản trên mạng (cho bản file:// gọi API) | `SITE_URL` |
 | `router.svelte.ts` | Điều hướng theo `#/...` | `go`, `parse`, `href` |
 | `ui.svelte.ts` | Lời Mít, toast, modal, pháo giấy, bảng chúc mừng | `say`, `toast`, `openModal`, `confetti`, `celebrate` |
 | `backup.ts` | Sao lưu/khôi phục file JSON | `exportBackup`, `importBackup` |
@@ -321,6 +349,7 @@ Tiến độ: Chromium/Edge dùng chung localStorage cho mọi file mở bằng 
 | `npm test` | 45 test logic: pinyin, chuyển dữ liệu, FSRS, lộ trình, câu hỏi mọi bài, chấm thanh, audio đủ file, động lực, **bộ chấm phát âm khớp bản Python 560/560** | ~3 s |
 | `npm run build` | Tạo `dist/` | ~5 s |
 | `npm run e2e` | Bot đi hết: phát âm → bài 1 → kiểm tra → ôn → từ điển → truyện → sao lưu → chuyển dữ liệu v0.4, chụp ảnh `tests/e2e/shots/`; kiểm audio câu; **micro giả** phát file wav để chấm phát âm (đúng → 100%, sai thanh → đánh dấu) | ~2 phút |
-| `npm run all` | Cả 4 lệnh trên | ~1,5 phút |
+| `npm run all` | Cả 4 lệnh trên | ~2,5 phút |
+| `npm run e2e:web` | Giả lập Cloudflare (wrangler): đồng bộ 2 máy học offline cùng lúc, mã QR, CORS file://, PWA mất mạng, khung điện thoại | ~1 phút |
 
 Quy tắc: **chạy `npm run all` trước mỗi lần cài bản mới lên máy Long.**

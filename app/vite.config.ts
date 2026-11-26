@@ -18,9 +18,28 @@ function classicScript(): Plugin {
   };
 }
 
+/** Ghi mã phiên bản vào sw.js (dist) để điện thoại biết có bản mới mà tải lại vỏ app. */
+function swVersion(): Plugin {
+  return {
+    name: "mitxue-sw-version",
+    apply: "build",
+    enforce: "post",
+    closeBundle: { order: "post", sequential: true, async handler() {
+      const { readFileSync, writeFileSync, existsSync } = await import("node:fs");
+      const { createHash } = await import("node:crypto");
+      const sw = "dist/sw.js";
+      if (!existsSync(sw)) return;
+      const h = createHash("sha1");
+      for (const f of ["dist/app/app.js", "dist/app/app.css", "dist/data/data.js", "dist/data/audio-index.js", "dist/pron/engine.js"])
+        if (existsSync(f)) h.update(readFileSync(f));
+      writeFileSync(sw, readFileSync(sw, "utf8").replace('const BUILD = "__BUILD__"', `const BUILD = "${h.digest("hex").slice(0, 10)}"`));
+    } },
+  };
+}
+
 export default defineConfig({
   base: "./",
-  plugins: [svelte(), classicScript()],
+  plugins: [svelte(), classicScript(), swVersion()],
   build: {
     outDir: "dist",
     emptyOutDir: true,
