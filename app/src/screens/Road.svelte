@@ -8,7 +8,8 @@
   const nx = nextUnit();
   const finish = estimatedFinish().toLocaleDateString("vi-VN");
   const units = (lv: number) => Array.from({ length: unitCount(lv) }, (_, k) => k + 1);
-  const label = (lv: number, u: number) => (hasLesson(lv) ? lessonOf(lv, u)?.title : wordsOf(lv, u).slice(0, 3).map(w => w.c).join(" "));
+  const label = (lv: number, u: number) => lessonOf(lv, u)?.title ?? wordsOf(lv, u).slice(0, 3).map(w => w.c).join(" ");
+  const lessonsIn = (lv: number) => units(lv).filter(u => lessonOf(lv, u)).length;
 </script>
 
 <section>
@@ -32,7 +33,8 @@
       <summary><span class="lvbadge">HSK {lv}</span><b>{wordsOfLevel(lv).length} từ mới · {unitCount(lv)} bài</b>
         <span class="muted">{levelPassed(lv) ? `✔ đã đạt ${S.levels[lv].best}%` : lock ? "🔒" : `${unitsDoneIn(lv)}/${unitCount(lv)}`}</span></summary>
       <p class="muted">{LEVEL_INFO[lv].can}</p>
-      {#if !hasLesson(lv)}<div class="info">HSK {lv}: đã có từ vựng, chữ Hán, audio, bài tập. Bài giảng ngữ pháp + hội thoại + nghĩa tiếng Việt sẽ được bổ sung dần (hiện nghĩa tạm bằng tiếng Anh).</div>{/if}
+      {#if !hasLesson(lv)}<div class="info">HSK {lv}: đã có từ vựng, chữ Hán, audio, bài tập. Bài giảng ngữ pháp + hội thoại + nghĩa tiếng Việt sẽ được bổ sung dần (hiện nghĩa tạm bằng tiếng Anh).</div>
+      {:else if lessonsIn(lv) < unitCount(lv)}<div class="info">HSK {lv}: bài 1–{lessonsIn(lv)} có hội thoại + ngữ pháp. Các bài sau hiện chỉ học từ vựng, giáo trình đang soạn tiếp.</div>{/if}
       {#if lock}<div class="muted">🔒 Mở khi đạt bài thi tổng HSK {lv - 1}.</div>
       {:else}
         <div class="units">

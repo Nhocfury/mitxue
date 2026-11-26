@@ -7,7 +7,7 @@
  *    bài chỉ có từ vựng (HSK 3–5) có 4 bước.
  *  - Từ mới chia phần ~8 từ; mỗi ngày tối đa settings.newPerDay từ mới.
  * ========================================================================= */
-import { hasLesson, LEVELS, STORIES, unitCount, unitTitle, wordsOf } from "./data";
+import { lessonOf, LEVELS, STORIES, unitCount, unitTitle, wordsOf } from "./data";
 import type { Route } from "./router.svelte";
 import { dueCount, dueKeys } from "./srs";
 import { S } from "./state.svelte";
@@ -29,7 +29,9 @@ export const STEP_NAMES: Record<StepKey, string> = {
 };
 const FULL: StepKey[] = ["vocab", "chars", "grammar", "dialogue", "practice", "test"];
 const LITE: StepKey[] = ["vocab", "chars", "practice", "test"];
-export const stepsOf = (lv: number): StepKey[] => (hasLesson(lv) ? FULL : LITE);
+/** Bài có giáo trình (hội thoại + ngữ pháp) thì 6 bước, bài chỉ có từ vựng thì 4 bước. Tính theo TỪNG BÀI
+ *  vì một cấp có thể mới soạn giáo trình cho vài bài đầu (vd HSK 3: bài 1–10). */
+export const stepsOf = (lv: number, u: number): StepKey[] => (lessonOf(lv, u) ? FULL : LITE);
 
 const uKey = (lv: number, u: number) => `${lv}:${u}`;
 /** Tiến độ một bài (tạo mới nếu chưa có). */
@@ -62,7 +64,7 @@ export function nextUnit(): { lv: number; u: number | "test" } | null {
 
 /** Bước đầu tiên chưa xong của bài. */
 export const firstOpenStep = (lv: number, u: number): StepKey =>
-  stepsOf(lv).find(k => !peekUnit(lv, u)?.steps[k]) ?? "vocab";
+  stepsOf(lv, u).find(k => !peekUnit(lv, u)?.steps[k]) ?? "vocab";
 
 /* ---------------- từ mới theo phần ---------------- */
 export function vocabChunks(lv: number, u: number) {
@@ -88,7 +90,7 @@ export function newGate(): { kind: "new" | "due"; html: string } | null {
 
 export function curStepName(lv: number, u: number): string {
   const st = peekUnit(lv, u);
-  const k = stepsOf(lv).find(x => !st?.steps[x]);
+  const k = stepsOf(lv, u).find(x => !st?.steps[x]);
   if (!k) return STEP_NAMES.test;
   if (k === "vocab") { const N = vocabChunks(lv, u).length; const vc = st?.vc ?? 0; if (vc < N) return `${STEP_NAMES.vocab} phần ${vc + 1}/${N}`; }
   return STEP_NAMES[k];

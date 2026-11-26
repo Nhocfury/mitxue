@@ -7,6 +7,6 @@ export function completeStep(lv: number, u: number, k: StepKey): StepKey | null 
   const st = unitProg(lv, u);
   if (!st.steps[k]) { st.steps[k] = true; addXP(15); }
   save();
-  const steps = stepsOf(lv); const i = steps.indexOf(k);
+  const steps = stepsOf(lv, u); const i = steps.indexOf(k);
   return steps[i + 1] ?? null;
 }

@@ -1,5 +1,13 @@
 # Lịch sử phiên bản
 
+## 1.2.0 (26/11/2026): HSK 3 (bài 1–10)
+
+- HSK 3 có giáo trình đầy đủ cho **bài 1–10**: hội thoại, 30 điểm ngữ pháp (把, 被, 越…越, bổ ngữ khả năng, 只要…就, 只有…才…), nghĩa tiếng Việt cho cả 506 từ.
+- Bài 11–21 tạm học theo kiểu từ vựng (4 bước) cho tới khi soạn xong.
+- Số bước mỗi bài tính **theo từng bài** (`stepsOf(lv, u)`), không theo cả cấp nữa.
+- Thêm từ ngoài đề cương HSK 3 (淋, 美元, 中秋节, 旱季…) và danh sách `PREVIEW` cho từ cấp cao dùng sớm (钥匙, 警察, 厉害…).
+- 193 câu mới có audio đọc nguyên câu.
+
 ## 1.1.0 (26/11/2026): Âm thanh
 
 - Mọi câu trong bài học và truyện có **file đọc nguyên câu** (TTS offline Matcha, dự phòng MeloTTS), có ngữ điệu, không ghép từng từ nữa.

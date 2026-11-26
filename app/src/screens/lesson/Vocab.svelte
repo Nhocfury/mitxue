@@ -5,7 +5,7 @@
   import WordCard from "../../components/WordCard.svelte";
   import { playAll, playWord } from "../../lib/audio";
   import { addNew, newGate, newToday, PASS_CHUNK, unitProg, vocabChunks, type StepKey } from "../../lib/curriculum";
-  import { hasLesson, wordsOf, wordsUpTo } from "../../lib/data";
+  import { lessonOf, wordsOf, wordsUpTo } from "../../lib/data";
   import { qHanzi, qListen, qMeaning, wordQs } from "../../lib/questions";
   import { go } from "../../lib/router.svelte";
   import { intro } from "../../lib/srs";
@@ -53,7 +53,7 @@
       <div class="warn">{@html gate.html}</div>
       <div class="row" style="margin-top:10px">
         <button class="btn" onclick={() => go("#/review")}>🔁 Ôn tập</button>
-        {#if hasLesson(lv)}<button class="btn ghost" onclick={() => goStep("grammar")}>📐 Học ngữ pháp</button>{/if}
+        {#if lessonOf(lv, u)}<button class="btn ghost" onclick={() => goStep("grammar")}>📐 Học ngữ pháp</button>{/if}
         <button class="btn ghost small" id="gateOff" onclick={() => { S.gateOff = todayStr(); save(); gate = null; }}>Vẫn học tiếp hôm nay</button>
       </div>
     {:else}

@@ -4,9 +4,11 @@ from pypinyin import pinyin, Style
 import opencc
 from hsk1_words import UNIT_WORDS
 from hsk1_lessons import UNITS, NAMES
-from extra import EXTRA_WORDS, RADICALS
+from extra import EXTRA_WORDS, RADICALS, PREVIEW
 from hsk2_words import UNIT_WORDS2
 from hsk2_lessons import UNITS2
+from hsk3_words import UNIT_WORDS3
+from hsk3_lessons import UNITS3
 from stories import STORIES
 
 from pathlib import Path
@@ -65,7 +67,9 @@ for r in list(csv.reader(open(f'{SRC}/hv/hanviet.csv', encoding='utf-8')))[1:]:
     try: rd = ast.literal_eval(r[1])
     except Exception: rd = []
     hv.setdefault(r[0], []).append((rd, r[2]))
+HV_FIX = {'着': 'trước'}   # từ điển Hán Việt thiếu, bổ sung tay
 def hanviet(ch, syl_num=None):
+    if ch in HV_FIX: return HV_FIX[ch]
     cands = []
     for t in dict.fromkeys(list(s2t.convert(ch)) + [ch]):
         cands += hv.get(t, [])
@@ -123,9 +127,14 @@ for u, txt in UNIT_WORDS2.items():
         w, py, vi = l.split('|')
         _, en = ced_best(clean(w))
         add_word(w, py, vi, en or '', 2, u)
-# HSK 3-5 theo tần suất, chia bài 20 từ
-LEVEL_UNITS = {1: 15, 2: len(UNIT_WORDS2)}
-for L in range(3, 6):
+for u, txt in UNIT_WORDS3.items():
+    for l in txt.strip().split('\n'):
+        w, py, vi = l.split('|')
+        _, en = ced_best(clean(w))
+        add_word(w, py, vi, en or '', 3, u)
+# HSK 4-5 theo tần suất, chia bài 20 từ
+LEVEL_UNITS = {1: 15, 2: len(UNIT_WORDS2), 3: len(UNIT_WORDS3)}
+for L in range(4, 6):
     ws = [l.strip() for l in open(f'{H}/HSK Words/HSK_Level_{L}_words.txt', encoding='utf-8') if l.strip()]
     ws.sort(key=lambda w: freq.get(clean(w), 99999))
     per = 20
@@ -140,8 +149,10 @@ for L in range(3, 6):
 # ---------- sentences: segmentation + pinyin ----------
 seg_vocab = {}
 for k, e in sorted(words.items(), key=lambda x: x[1]['lv']):
-    if e['lv'] <= 2: seg_vocab.setdefault(e['c'], e['py'])
+    if e['lv'] <= 3: seg_vocab.setdefault(e['c'], e['py'].replace(' … ', '').replace(' ', ''))
 for n, p in NAMES.items(): seg_vocab[n] = p
+for k, e in words.items():
+    if e['c'] in PREVIEW: seg_vocab.setdefault(e['c'], e['py'].replace(' ', ''))
 for w, (p, _) in EXTRA_WORDS.items(): seg_vocab[w] = p
 seg_vocab.update({'星期一':'xīngqīyī','星期二':'xīngqī\'èr','星期三':'xīngqīsān','星期四':'xīngqīsì','星期五':'xīngqīwǔ','星期六':'xīngqīliù','第一':'dì-yī','第二':'dì-èr','第三':'dì-sān','一点儿': 'yìdiǎnr', '有点儿': 'yǒudiǎnr', '有一点儿': 'yǒu yìdiǎnr', '没有': 'méiyǒu', '同学们': 'tóngxuémen', '没': 'méi', '周六': 'zhōuliù', '周末': 'zhōumò', '周一': 'zhōuyī', '第二十': 'dì-èrshí', '看看': 'kànkan', '问问': 'wènwen', '试试': 'shìshi', '慢慢': 'mànmàn', '有时': 'yǒushí', '有时候': 'yǒushíhou', '外国人': 'wàiguórén', '地铁站': 'dìtiězhàn'})
 PUNCT = '，。？！、：；“”"…（）'
@@ -214,7 +225,7 @@ def proc_sent(zh_marked, vi):
     return {"zh": zh, "vi": vi, "py": sent_py(toks), "t": toks, "k": keys}
 
 lessons = []
-for lv_, u, U in [(1, i + 1, x) for i, x in enumerate(UNITS)] + [(2, i + 1, x) for i, x in enumerate(UNITS2)]:
+for lv_, u, U in [(1, i + 1, x) for i, x in enumerate(UNITS)] + [(2, i + 1, x) for i, x in enumerate(UNITS2)] + [(3, i + 1, x) for i, x in enumerate(UNITS3)]:
     L = {"lv": lv_, "u": u, "title": U["title"], "topic": U["topic"], "goals": U["goals"], "tip": U["tip"],
          "dialogue": [dict(proc_sent(z, v), sp=sp) for sp, z, v in U["dialogue"]],
          "grammar": [{"title": g["title"], "formula": g["formula"], "explain": g["explain"], "note": g["note"],
@@ -230,7 +241,7 @@ for i, st in enumerate(STORIES):
 # ---------- kiểm tra từ ngoài phạm vi ----------
 lv_of = {}
 for k, e in words.items(): lv_of[e['c']] = min(lv_of.get(e['c'], 9), e['lv'])
-OK_EXTRA = set(NAMES) | set(EXTRA_WORDS) | {'周六','周末','周一','第二十','看看','问问','试试','慢慢','有时','有时候','外国人','地铁站','没','一点儿','有点儿','没有'}
+OK_EXTRA = set(NAMES) | set(EXTRA_WORDS) | PREVIEW | {'周六','周末','周一','第二十','看看','问问','试试','慢慢','有时','有时候','外国人','地铁站','没','一点儿','有点儿','没有'}
 def out_of_scope(sents, maxlv):
     bad = set()
     for s_ in sents:
@@ -239,10 +250,10 @@ def out_of_scope(sents, maxlv):
     return bad
 for L in lessons:
     b = out_of_scope(L['dialogue'] + [x for g in L['grammar'] for x in g['ex']], L['lv'])
-    if b: print('OOS lesson', L['lv'], L['u'], ''.join(sorted(b)))
+    if b: print('OOS lesson', L['lv'], L['u'], ' '.join(sorted(b)))
 for st in stories:
     b = out_of_scope(st['lines'], st['lv'])
-    if b: print('OOS story', st['title'], ''.join(sorted(b)))
+    if b: print('OOS story', st['title'], ' '.join(sorted(b)))
 
 # ---------- characters ----------
 chars = {}

@@ -11,7 +11,7 @@
 </script>
 
 <header>
-  <div class="logo"><span class="seal hz">学</span> Mít Xué <span class="ver">v1.0</span></div>
+  <div class="logo"><span class="seal hz">学</span> Mít Xué <span class="ver">v1.2</span></div>
   <div class="chips">
     <div class="chip" title="Cấp độ">⭐ Lv <b id="lv">{L.lv}</b> <div class="xpbar"><i style="width:{(L.into / L.need) * 100}%"></i></div> <span id="xptxt" class="muted">{L.into}/{L.need} XP</span></div>
     <div class="chip" title="Chuỗi ngày học (mỗi tuần được nghỉ 1 ngày)">🔥 <b id="streak">{days}</b> ngày</div>

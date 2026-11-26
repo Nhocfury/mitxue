@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { addNew, CHUNK_SIZE, newGate, nextAction, nextUnit, pyHidden, unitOpen, unitProg, vocabChunks } from "../../src/lib/curriculum";
+import { addNew, CHUNK_SIZE, newGate, nextAction, nextUnit, pyHidden, stepsOf, unitOpen, unitProg, vocabChunks } from "../../src/lib/curriculum";
 import { LEVELS, unitCount, wordsOf } from "../../src/lib/data";
 import { S, replaceState } from "../../src/lib/state.svelte";
 import { blankState } from "../../src/lib/storage";
@@ -44,5 +44,15 @@ describe("lộ trình", () => {
   it("pinyin mờ từ HSK 2 ở chế độ tự động", () => {
     expect(pyHidden(1)).toBe(false); expect(pyHidden(2)).toBe(true);
     S.settings.pyMode = "show"; expect(pyHidden(3)).toBe(false);
+  });
+});
+
+describe("số bước theo từng bài", () => {
+  it("bài có giáo trình 6 bước, bài chỉ có từ vựng 4 bước (HSK 3 mới soạn bài 1–10)", () => {
+    expect(stepsOf(1, 1)).toHaveLength(6);
+    expect(stepsOf(3, 1)).toHaveLength(6);
+    expect(stepsOf(3, 10)).toHaveLength(6);
+    expect(stepsOf(3, 11)).toHaveLength(4);
+    expect(stepsOf(4, 1)).toHaveLength(4);
   });
 });

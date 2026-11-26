@@ -15,8 +15,14 @@ EXTRA_WORDS = {
 "起":("qǐ","dậy"),"英语":("Yīngyǔ","tiếng Anh"),"美国":("Měiguó","nước Mỹ"),"常":("cháng","thường"),"常常":("chángcháng","thường thường"),
 "没有":("méiyǒu","không có; chưa"),"第一":("dì-yī","thứ nhất"),"第二":("dì-èr","thứ hai"),"第三":("dì-sān","thứ ba"),"晴天":("qíngtiān","trời nắng"),
 "星期一":("xīngqīyī","thứ hai"),"星期二":("xīngqī'èr","thứ ba"),"星期六":("xīngqīliù","thứ bảy"),"服务员":("fúwùyuán","phục vụ"),"路人":("lùrén","người qua đường"),
+# HSK 3
+"淋":("lín","dầm (mưa), xối"),"好好儿":("hǎohāor","cho tử tế, cho đàng hoàng"),"瓶":("píng","chai, lọ (lượng từ)"),"美元":("měiyuán","đô la Mỹ"),
+"成":("chéng","thành, trở thành"),"蓝色":("lánsè","màu xanh dương"),"中秋节":("Zhōngqiū Jié","Tết Trung thu"),"旱季":("hànjì","mùa khô"),
+"拐":("guǎi","rẽ, quẹo"),"徐悲鸿":("Xú Bēihóng","Từ Bi Hồng (họa sĩ nổi tiếng)"),
 
 }
+# Từ của cấp cao hơn được dùng sớm trong bài (đã có nghĩa trong từ điển HSK, chỉ cho phép xuất hiện)
+PREVIEW = {"只有","最好","好多","钥匙","厨房","窗户","严重","人民币","月饼","停","警察","轻","厉害"}
 # Tên bộ thủ tiếng Việt (bộ thủ thường gặp)
 RADICALS = {
 "一":"nhất (số một)","丨":"cổn (nét sổ)","丶":"chủ (nét chấm)","丿":"phiệt (nét phẩy)","乙":"ất","亅":"quyết (nét móc)","二":"nhị (số hai)",

@@ -14,7 +14,7 @@
 
   let { lv, u, step }: { lv: number; u: number; step?: string } = $props();
   const open = unitOpen(lv, u);
-  const steps = stepsOf(lv);
+  const steps = stepsOf(lv, u);
   const L = lessonOf(lv, u);
   const cur: StepKey = (steps as string[]).includes(step ?? "") ? (step as StepKey) : firstOpenStep(lv, u);
   const st = $derived(peekUnit(lv, u));
