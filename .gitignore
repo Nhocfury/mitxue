@@ -9,3 +9,4 @@ __pycache__/
 .DS_Store
 test-results/
 content/.cache/
+content/asr_lab/ev/
