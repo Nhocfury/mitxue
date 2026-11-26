@@ -1,0 +1,42 @@
+<!-- Khung app: thanh trên, Mít, thanh điều hướng, màn hình theo địa chỉ, hộp thoại, thông báo. -->
+<script lang="ts">
+  import TopBar from "./components/TopBar.svelte";
+  import Mit from "./components/Mit.svelte";
+  import Nav from "./components/Nav.svelte";
+  import Modal from "./components/Modal.svelte";
+  import Toast from "./components/Toast.svelte";
+  import Home from "./screens/Home.svelte";
+  import Road from "./screens/Road.svelte";
+  import Lesson from "./screens/lesson/Lesson.svelte";
+  import LevelTest from "./screens/LevelTest.svelte";
+  import Review from "./screens/Review.svelte";
+  import Dict from "./screens/Dict.svelte";
+  import Stats from "./screens/Stats.svelte";
+  import Story from "./screens/Story.svelte";
+  import Pron from "./screens/pron/Pron.svelte";
+  import { router } from "./lib/router.svelte";
+
+  const r = $derived(router.route);
+</script>
+
+<div class="wrap">
+  <TopBar />
+  <Mit />
+  <Nav />
+  <main id="main">
+    {#key router.n}
+      {#if r.name === "home"}<Home />
+      {:else if r.name === "road"}<Road />
+      {:else if r.name === "lesson"}<Lesson lv={r.lv} u={r.u} step={r.step} />
+      {:else if r.name === "levelTest"}<LevelTest lv={r.lv} />
+      {:else if r.name === "review"}<Review five={r.five} />
+      {:else if r.name === "dict"}<Dict />
+      {:else if r.name === "stats"}<Stats />
+      {:else if r.name === "story"}<Story id={r.id} />
+      {:else if r.name === "pron"}<Pron tab={r.tab} />
+      {/if}
+    {/key}
+  </main>
+</div>
+<Modal />
+<Toast />
