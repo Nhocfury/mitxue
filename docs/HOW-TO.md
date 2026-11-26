@@ -27,6 +27,11 @@ Mỗi mục: muốn làm gì → sửa file nào → chạy lệnh gì. Sửa xo
 - Đổi giọng/tốc độ/độ lớn: các hằng `SPEED`, `TARGET_I` trong `build_audio.py`.
 - Kiểm độ lớn: `python3 content/check_audio.py`.
 
+### Chấm phát âm
+- Pinyin từng chữ (`sy`) do `build_data.py` tự sinh từ pinyin câu. Câu có chữ Latin/số (HSK…) không có `sy` → không hiện nút 🎙️.
+- Đổi mô hình / nâng `@sherpaw/asr`: sửa `app/scripts/build-pron.mjs`, chạy `npm run build:pron`, rồi đo lại bằng `content/asr_lab/` (xem `docs/PRON-ASR.md`).
+- Sửa luật chấm ở `app/src/lib/pronscore.ts` thì sửa cả `content/asr_lab/kws2.py`, chạy `python3 content/asr_lab/mkfixture.py` để test khớp lại.
+
 ### Thêm truyện đọc
 - `content/stories.py`: `lv` (cấp), `after` (mở sau bài số mấy), `lines`, `qs` (câu hỏi, 3 lựa chọn, chỉ số đáp án đúng).
 

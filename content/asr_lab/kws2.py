@@ -33,12 +33,12 @@ def _set_tone(b,t):
     else: v=[c for c in b if c in marks][-1]
     k=b.rindex(v) if v in 'iuü' else b.index(v)
     return b[:k]+marks[v][t-1]+b[k+1:]
-def target(text):
+def target(text, sy=None):
     chars=[c for c in text if re.match(r'[一-鿿]',c)]
-    p=[x[0] for x in pinyin(''.join(chars),style=Style.TONE)]
+    p=sy or [x[0] for x in pinyin(''.join(chars),style=Style.TONE)]
     out=[]
     for k,(s,c) in enumerate(zip(p,chars)):
-        if c=='儿' and k>0 and chars[k-1] not in '女儿婴': out.append(None); continue   # 儿化: không chấm riêng
+        if (sy and s=='r') or (not sy and c=='儿' and k>0 and chars[k-1] not in '女儿婴'): out.append(None); continue   # 儿化: không chấm riêng
         i=to_initials(s,strict=False); f=to_finals_tone(s,strict=False)
         out.append(dict(c=c,i=i,f=f,t=tone_of(f)))
     # biến điệu: thêm thanh được chấp nhận
@@ -48,10 +48,10 @@ def target(text):
         nxt=syl[k+1] if k+1<len(syl) else None
         if nxt:
             if o['t']==3 and nxt['t']==3: acc.add(2)
-            if o['c']=='不' and nxt['t']==4: acc.add(2)
-            if o['c']=='一': acc |= {2,4}
+        if o['c']=='不': acc |= {2,4}          # dữ liệu app hiển thị bú/bù theo biến điệu
+        if o['c']=='一': acc |= {1,2,4}
         if o['t']==5: acc={1,2,3,4,5}
-        if o['c'] in '个们子么的了吗呢吧着过得地': acc={1,2,3,4,5}       # hay đọc nhẹ
+        if o['c'] in '个们子么的了吗呢吧着过得地啊呀': acc={1,2,3,4,5}       # hay đọc nhẹ
         o['acc']={_set_tone(base(o['f']),t) if t!=5 else base(o['f']) for t in acc}
     return out
 def hot(tgt):

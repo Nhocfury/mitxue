@@ -36,6 +36,15 @@ async def answer_quiz(pg, root="body", correct=True, maxq=45):
                 order = sorted(range(k), key=lambda j: idx[j])
             for j in order: await toks.nth(j).click()
             await box.locator("#oCheck").click()
+        elif await box.locator("[data-pron-rec]").count() and not await box.locator("#spRec").count():
+            # máy chấm thật: micro giả của Chromium phát tiếng bíp → bộ chấm chạy hết luồng, chắc chắn chưa đạt
+            await box.locator("[data-pron-rec]").click()
+            await box.locator("#spOk, #spBad, #spSelf, #spRec, [data-pron-msg]").first.wait_for(timeout=30000)
+            if await box.locator("#spRec").count(): continue          # rơi về tự chấm
+            if not await box.locator("#spOk, #spBad, #spSelf").count():  # máy không nghe ra gì → tự chấm
+                await box.locator("#spManual").click(); continue
+            if correct: await box.locator("#spOk, #spSelf").first.click()
+            else: await box.locator("#spBad, #spOk").first.click()
         elif await box.locator("#spRec").count():
             await box.locator("#spRec").click(); await pg.wait_for_timeout(3300)
             await box.locator("#spOk" if correct else "#spBad").click()

@@ -1,5 +1,14 @@
 # Lịch sử phiên bản
 
+## 1.5.0 (27/11/2026): Máy chấm phát âm
+
+- **Đọc to có máy chấm**: nút 🎙️ ở từng câu hội thoại và câu hỏi "đọc to" trong bài kiểm tra. Em đọc xong im 1 giây là tự dừng; mỗi chữ tô **xanh** (đúng), **vàng** (sai thanh), **đỏ** (sai âm), gạch (thiếu), kèm "em: …" là máy nghe ra gì và lời nhận xét cụ thể.
+- Chạy **offline trong trình duyệt** (sherpa-onnx WebAssembly + mô hình pinyin 3,3M ~5 MB), chỉ tải khi bấm 🎙️ lần đầu (~2 giây).
+- Hiểu biến điệu (你好 ní hǎo, 不是 bú shì, 一), thanh nhẹ (的了吗…), 儿 hóa (哪儿).
+- Luôn có nút tự chấm: micro hỏng hoặc máy nghe nhầm vẫn đi tiếp được.
+- Dữ liệu: thêm pinyin từng chữ `sy` cho 988 câu, 3.657 từ. Sửa 得了 đọc **dé** (trước nhầm děi).
+- Test: bộ chấm TypeScript khớp bản Python 560/560 mẫu; e2e micro giả.
+
 ## 1.4.0 (27/11/2026): HSK 3 đầy đủ
 
 - Soạn xong giáo trình HSK 3 **bài 11–21**: hội thoại + 33 điểm ngữ pháp mới (为了, 关于/根据, 或者/还是, 其实, 又…又…, 一…也不, 遍/次, 难/好/容易 + V, 怎么办, 是不是, 用 + vật + V, 借给/跟…借, 咱们, 跟…见面, 让 + cảm xúc, 对…满意, 挺…的, 差不多/几乎/大概, 像…一样, 以为/认为, V + 成, 受到/得到, 又/再, 到处都, 以上/以下, 得 děi/应该/需要, 最好, 地).

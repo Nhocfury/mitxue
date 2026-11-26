@@ -76,6 +76,22 @@ flowchart LR
 
 **Độ lớn:** mọi file được đưa về **-16 LUFS** (chuẩn EBU R128, mức thường dùng cho giọng nói/podcast) bằng `loudnorm` 2 lượt, tăng giảm tuyến tính nên không méo tiếng. Kiểm bằng `python3 content/check_audio.py`.
 
+## 1c. Chấm phát âm (máy nghe em đọc)
+
+```mermaid
+flowchart LR
+  MIC[Micro] -->|MediaRecorder| MIC2[lib/mic.ts<br/>tự dừng khi im 1 s<br/>đổi về 16 kHz]
+  MIC2 --> ENG[pron/engine.js<br/>sherpa-onnx WASM<br/>mô hình pinyin 3.3M]
+  ENG -->|token: x · ué · sh · ēng| SC[lib/pronscore.ts<br/>căn với pinyin từng chữ 'sy']
+  D[data.js: sy] --> SC
+  SC --> UI[PronCheck.svelte<br/>xanh / vàng / đỏ]
+```
+
+- **Lazy**: `lib/asr.svelte.ts` chỉ chèn 3 thẻ `<script>` (`pron/wasm.js` 18 MB, `pron/model.js` 6,7 MB, `pron/engine.js`) khi em bấm 🎙️ lần đầu. Wasm + mô hình nằm dạng base64 trong `.js` vì `file://` không cho `fetch`.
+- **Dùng ở**: câu hỏi "đọc to" trong kiểm tra (`SpeakView`) và nút 🎙️ từng câu hội thoại (`Dialogue`).
+- **Đạt** (SpeakView): từ 1–2 chữ phải đúng hết, dài hơn ≥ 80%. Luôn có nút tự chấm (máy có thể nghe nhầm / micro hỏng).
+- Số liệu, lý do chọn mô hình, giới hạn: `docs/PRON-ASR.md`. Đóng gói lại: `npm run build:pron`.
+
 ## 2. Bên trong app: các lớp (layers)
 
 Code app chia 3 lớp, lớp trên chỉ gọi lớp dưới, không gọi ngược:
@@ -228,6 +244,9 @@ mitxue/                         ← repo git
 | `motivation.ts` | Nhiệm vụ ngày + rương, dải 7 ngày, sao của bài, nhắc ngủ 23:00 | `quests`, `openChest`, `lastDays`, `starsOf`, `checkBedtime` |
 | `sfx.ts` | Tiếng hiệu ứng tổng hợp bằng Web Audio (tắt được trong Cài đặt) | `sfx.ok`, `sfx.bad`, `sfx.done`, `sfx.reward` |
 | `audio.ts` | Phát audio từ, âm tiết, câu (file câu → giọng Edge → ghép) | `playWord`, `playSyl`, `playSentence`, `playAll`, `stopAudio` |
+| `pronscore.ts` | Chấm từng âm tiết từ token pinyin nghe được (biến điệu, thanh nhẹ, 儿 hóa) | `scorePron`, `buildTarget` |
+| `asr.svelte.ts` | Nạp bộ máy chấm (lazy), trạng thái nạp | `ensureEngine`, `recognizePinyin`, `asr` |
+| `mic.ts` | Ghi âm, đo mức, tự dừng, đổi về 16 kHz | `Recorder`, `to16k` |
 | `router.svelte.ts` | Điều hướng theo `#/...` | `go`, `parse`, `href` |
 | `ui.svelte.ts` | Lời Mít, toast, modal, pháo giấy, bảng chúc mừng | `say`, `toast`, `openModal`, `confetti`, `celebrate` |
 | `backup.ts` | Sao lưu/khôi phục file JSON | `exportBackup`, `importBackup` |
@@ -288,6 +307,7 @@ Trình duyệt **chặn** `<script type="module">` và `fetch()` trên `file://`
 1. Dữ liệu nội dung là **script thường** gán vào `window.DATA`, `window.STROKES`, `window.SYL_RAW` (không dùng `fetch` JSON).
 2. Vite build app thành **một file `app/app.js` dạng IIFE**; plugin `mitxue-classic-script` trong `vite.config.ts` đổi thẻ `<script type="module">` thành `<script defer>`.
 3. Không chia nhỏ code (`inlineDynamicImports`), CSS gom một file `app/app.css`.
+4. Bộ máy chấm phát âm (WebAssembly + mô hình) cũng là script thường chứa base64, nạp bằng thẻ `<script>` khi cần.
 
 Tiến độ: Chromium/Edge dùng chung localStorage cho mọi file mở bằng `file://` trên cùng máy, nên chuyển thư mục app vẫn giữ tiến độ. **Đổi trình duyệt thì không** → dùng Sao lưu/Khôi phục.
 
@@ -298,9 +318,9 @@ Tiến độ: Chromium/Edge dùng chung localStorage cho mọi file mở bằng 
 | Lệnh | Kiểm gì | Bao lâu |
 |---|---|---|
 | `npm run check` | Kiểu TypeScript + lỗi Svelte | ~10 s |
-| `npm test` | 32 test logic: pinyin, chuyển dữ liệu, FSRS, lộ trình, câu hỏi mọi bài, chấm thanh, audio đủ file | ~3 s |
+| `npm test` | 45 test logic: pinyin, chuyển dữ liệu, FSRS, lộ trình, câu hỏi mọi bài, chấm thanh, audio đủ file, động lực, **bộ chấm phát âm khớp bản Python 560/560** | ~3 s |
 | `npm run build` | Tạo `dist/` | ~5 s |
-| `npm run e2e` | Bot đi hết: phát âm → bài 1 → kiểm tra → ôn → từ điển → truyện → sao lưu → chuyển dữ liệu v0.4, chụp ảnh `tests/e2e/shots/` | ~1 phút |
+| `npm run e2e` | Bot đi hết: phát âm → bài 1 → kiểm tra → ôn → từ điển → truyện → sao lưu → chuyển dữ liệu v0.4, chụp ảnh `tests/e2e/shots/`; kiểm audio câu; **micro giả** phát file wav để chấm phát âm (đúng → 100%, sai thanh → đánh dấu) | ~2 phút |
 | `npm run all` | Cả 4 lệnh trên | ~1,5 phút |
 
 Quy tắc: **chạy `npm run all` trước mỗi lần cài bản mới lên máy Long.**

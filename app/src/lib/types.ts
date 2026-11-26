@@ -6,13 +6,14 @@
 
 /** Một từ vựng HSK. `key` = "cấp:từ gốc" (duy nhất), `c` = chữ sạch (bỏ số 1/2 trong đề cương). */
 export interface Word {
-  w: string; c: string; py: string; vi: string; en: string;
+  w: string; c: string; py: string; vi: string; en: string; sy?: string[];
   lv: number; u: number; a?: boolean; hv?: string;
   key: string;
 }
 
 /** Một câu: chữ Hán, nghĩa, pinyin, tách từ `t`, từ trọng tâm `k` (để đục lỗ), người nói `sp` (hội thoại). */
-export interface Sentence { zh: string; vi: string; py: string; t: string[]; k: string[]; sp?: string }
+/** sy: pinyin từng chữ Hán ("r" = 儿 hóa), dùng cho bộ chấm phát âm; câu có chữ Latin/số thì không có. */
+export interface Sentence { zh: string; vi: string; py: string; t: string[]; k: string[]; sp?: string; sy?: string[] }
 
 export interface Grammar { title: string; formula: string; explain: string; note: string; ex: Sentence[] }
 

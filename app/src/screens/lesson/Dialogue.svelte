@@ -5,10 +5,12 @@
   import { S, save } from "../../lib/state.svelte";
   import type { Lesson } from "../../lib/types";
   import NextStep from "./NextStep.svelte";
+  import PronCheck from "../../components/PronCheck.svelte";
   let { lv, L, goStep }: { lv: number; L: Lesson; goStep: (k: StepKey) => void } = $props();
   const speakers = [...new Set(L.dialogue.map(d => d.sp!))];
   let showPy = $state(S.settings.showPy), showVi = $state(true), role = $state("");
   const fade = pyHidden(lv);
+  let speakAt = $state(-1);                 // câu đang mở khung "đọc to"
 </script>
 
 <div class="card">
@@ -20,18 +22,22 @@
       <select class="text" bind:value={role}><option value="">Đóng vai: không</option>{#each speakers as s}<option>{s}</option>{/each}</select>
     </div>
   </div>
-  <p class="muted">Nghe cả bài 2 lần → đọc theo từng câu → chọn "Đóng vai" để tự nói phần của một nhân vật (câu đó sẽ bị che).</p>
+  <p class="muted">Nghe cả bài 2 lần → bấm 🎙️ ở từng câu để đọc to, chị chấm từng chữ → chọn "Đóng vai" để tự nói phần của một nhân vật (câu đó sẽ bị che).</p>
   <div id="dlg">
-    {#each L.dialogue as d}
+    {#each L.dialogue as d, i}
       {@const hide = role !== "" && d.sp === role}
       <div class="dlg" class:b={speakers.indexOf(d.sp!) % 2 === 1}>
         <div class="sp hz">{d.sp}</div>
         <div class="line"><div class="row" style="align-items:flex-start">
-          <button class="iconbtn" onclick={() => playSentence(d)}>🔊</button>
+          <div class="col">
+            <button class="iconbtn" onclick={() => playSentence(d)} aria-label="Nghe">🔊</button>
+            {#if d.sy}<button class="iconbtn" class:on={speakAt === i} data-speak={i} onclick={() => (speakAt = speakAt === i ? -1 : i)} aria-label="Đọc to">🎙️</button>{/if}
+          </div>
           <div style="flex:1">
             <div class="zh hz" style:visibility={hide ? "hidden" : "visible"}>{d.zh}</div>
             {#if showPy && !hide}<div class="muted"><Py py={d.py} {fade} /></div>{/if}
             {#if showVi}<div class="vi">{d.vi}</div>{/if}
+            {#if speakAt === i && d.sy}{#key i}<PronCheck zh={d.zh} sy={d.sy} play={() => playSentence(d)} compact />{/key}{/if}
           </div>
         </div></div>
       </div>
@@ -39,3 +45,8 @@
   </div>
   <NextStep lv={L.lv} u={L.u} k="dialogue" {goStep} />
 </div>
+
+<style>
+  .col{display:flex;flex-direction:column;gap:4px}
+  .iconbtn.on{background:var(--red-soft);border-radius:8px}
+</style>

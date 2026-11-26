@@ -191,7 +191,8 @@ def sent_py(toks):
             p = 'yí' if tn == 4 else 'yì'
         if t == '过' and prev in ('去','来','吃','喝','考','买','看','听','学','做','住','用','见','说','到','玩','坐','写','读','试','找','问','踢','打','游','跑'): p = 'guo'
         # 得 = děi (phải) khi đứng sau chủ ngữ / phó từ, không đứng sau động từ (说得好 = de)
-        if t == '得' and (prev in PUNCT or prev == '' or prev in ('还','也','就','都','又','可','真','总','我','你','他','她','我们','你们','他们','咱们','大家','您')): p = 'děi'
+        if t == '得' and nxt in ('了', '到'): p = 'dé'                        # 得了 / 得到 = được
+        elif t == '得' and (prev in PUNCT or prev == '' or prev in ('还','也','就','都','又','可','真','总','我','你','他','她','我们','你们','他们','咱们','大家','您')): p = 'děi'
         if t == '还' and nxt == '给': p = 'huán'          # 还给 = trả lại
         if t == '只' and re.match(r'[一二两三四五六七八九十几这那哪]', prev or ''): p = 'zhī'
         if t == '不' and nxt:
@@ -221,11 +222,50 @@ def numjoin(g):
         if out and not out.endswith(' ') and x[0] in 'aeoāáǎàēéěèōóǒò': out += "'"
         out += x
     return re.sub(' +', ' ', out).strip()
+
+# ---------- pinyin từng chữ (cho bộ chấm phát âm) ----------
+# Tách chuỗi pinyin (đã có dấu, đúng như app hiển thị) thành đúng N âm tiết, N = số chữ Hán.
+# 儿 hóa (diǎnr) → âm tiết "r" gắn với chữ 儿.
+_TONELESS = str.maketrans('āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü', 'aaaaooooeeeeiiiiuuuuvvvvv')
+SYL_SET = set(re.sub(r'\d', '', f[:-4]).replace('uu', 'v') for f in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'app', 'public', 'audio', 's')))
+SYL_SET |= {'r', 'm', 'n', 'ng', 'hm', 'yo', 'lo', 'o', 'ei', 'nv', 'lv', 'nve', 'lve', 'ê', 'er'}
+@__import__('functools').lru_cache(None)
+def _cands(ch):
+    return {p.translate(_TONELESS) for p in pinyin(ch, style=Style.TONE, heteronym=True)[0]} | ({'er', 'r'} if ch == '儿' else set())
+def split_syllables(py, n, chars=None):
+    marked = re.sub(r"[^a-zāáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü]", "", py.lower())
+    plain = marked.translate(_TONELESS)
+    L = len(plain)
+    from functools import lru_cache
+    @lru_cache(None)
+    def go(i, k):
+        if i == L: return [] if k == 0 else None
+        if k == 0: return None
+        for j in range(min(L, i + 6), i, -1):
+            sy = plain[i:j]
+            if sy in SYL_SET:
+                ch = chars[n - k] if chars else None
+                if sy == 'r' and ch != '儿': continue          # "r" chỉ dành cho 儿 hóa
+                if ch and sy != 'r' and _cands(ch) and sy not in _cands(ch): continue   # phải là 1 cách đọc của chữ đó
+                rest = go(j, k - 1)
+                if rest is not None: return [(i, j)] + rest
+        return None
+    seg = go(0, n)
+    return [marked[a:b] for a, b in seg] if seg else None
+def sent_syl(zh, py):
+    chars = re.findall(r'[一-鿿]', zh)
+    if not chars or re.search(r'[A-Za-z0-9０-９]', zh): return None
+    return split_syllables(py, len(chars), chars)
 def proc_sent(zh_marked, vi):
     keys = re.findall(r'\[(.+?)\]', zh_marked)
     zh = zh_marked.replace('[', '').replace(']', '')
     toks = segment(zh)
-    return {"zh": zh, "vi": vi, "py": sent_py(toks), "t": toks, "k": keys}
+    py = sent_py(toks)
+    d = {"zh": zh, "vi": vi, "py": py, "t": toks, "k": keys}
+    sy = sent_syl(zh, py)
+    if sy: d["sy"] = sy
+    elif not re.search(r'[A-Za-z0-9]', zh): print('không tách được âm tiết:', zh, py)
+    return d
 
 lessons = []
 for lv_, u, U in [(1, i + 1, x) for i, x in enumerate(UNITS)] + [(2, i + 1, x) for i, x in enumerate(UNITS2)] + [(3, i + 1, x) for i, x in enumerate(UNITS3)]:
@@ -319,6 +359,14 @@ for L in range(1, 6):
     gram_titles[L] = len(re.findall(r'^\s+- ', t, re.M))
 hanzi_counts = {L: sum(1 for l in open(f'{H}/HSK Hanzi/HSK_Level_{L}_hanzi.txt', encoding='utf-8') if l.strip()) for L in range(1, 6)}
 
+_nosy = []
+for _w in words.values():
+    _ch = re.findall(r'[一-鿿]', _w["c"])
+    if _ch and len(_ch) == len(_w["c"]):
+        _sy = split_syllables(_w["py"], len(_ch), _ch)
+        if _sy: _w["sy"] = _sy
+        else: _nosy.append(_w["c"])
+if _nosy: print('từ không tách được âm tiết:', len(_nosy), _nosy[:10])
 data = {"words": list(words.values()), "lessons": lessons, "chars": chars, "extra": extra, "audio": amap, "stories": stories,
         "levelUnits": LEVEL_UNITS, "gramCount": gram_titles, "hanziCount": hanzi_counts}
 os.makedirs(f'{APP}/data', exist_ok=True)
