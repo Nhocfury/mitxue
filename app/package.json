@@ -7,7 +7,7 @@
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
-    "e2e": "python3 tests/e2e/run_e2e.py",
+    "e2e": "python3 tests/e2e/run_e2e.py && python3 tests/e2e/audio_check.py",
     "all": "npm run check && npm test && npm run build && npm run e2e"
   },
   "devDependencies": {

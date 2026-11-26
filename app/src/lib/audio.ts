@@ -48,14 +48,29 @@ function findVoice(): void {
 if (typeof speechSynthesis !== "undefined") { findVoice(); speechSynthesis.onvoiceschanged = findVoice; }
 export const voiceName = () => zhVoice?.name ?? null;
 
-function speakTTS(text: string): Promise<boolean> | null {
-  if (!zhVoice) return null;
+let lastUtterance: SpeechSynthesisUtterance | null = null; // giữ tham chiếu, tránh Chrome/Edge thu dọn giữa chừng
+/**
+ * Đọc bằng giọng tiếng Trung của trình duyệt. Trả về true nếu đọc được.
+ * Chống 2 lỗi của Edge/Chrome: (1) gọi speak() ngay sau cancel() bị nuốt mất → chờ 80 ms;
+ * (2) giọng "Online" im lặng khi mạng chập chờn → quá 2,5 giây chưa bắt đầu đọc thì bỏ, trả false.
+ */
+function speakTTS(text: string, my: number): Promise<boolean> {
   const v = zhVoice;
+  if (!v || typeof speechSynthesis === "undefined") return Promise.resolve(false);
   return new Promise(res => {
+    let started = false, done = false;
+    const finish = (ok: boolean) => { if (!done) { done = true; res(ok); } };
     const u = new SpeechSynthesisUtterance(text);
     u.voice = v; u.lang = v.lang; u.rate = 0.85 * S.settings.rate;
-    u.onend = () => res(true); u.onerror = () => res(false);
-    speechSynthesis.speak(u);
+    u.onstart = () => { started = true; };
+    u.onend = () => finish(true);
+    u.onerror = () => finish(started);
+    lastUtterance = u;
+    setTimeout(() => {
+      if (my !== token) return finish(true);          // đã bấm phát cái khác
+      speechSynthesis.resume(); speechSynthesis.speak(u);
+    }, 80);
+    setTimeout(() => { if (!started && !done) { speechSynthesis.cancel(); finish(false); } }, 2500);
   });
 }
 
@@ -75,14 +90,15 @@ export async function playWord(c: string): Promise<unknown> {
   stopAudio(); touch(); const my = token;
   const src = wordAudioSrc(c);
   if (src) return playFile(src, S.settings.rate);
-  return speakTTS(c) ?? playSylSeq(pinyinOfToken(c), my);
+  if (await speakTTS(c, my)) return true;
+  if (my === token) return playSylSeq(pinyinOfToken(c), my);
 }
 
 /** Đọc một câu. */
 export async function playSentence(s: Pick<Sentence, "zh" | "t">): Promise<unknown> {
   stopAudio(); touch(); const my = token;
-  const tts = speakTTS(s.zh); if (tts) return tts;
-  for (const t of s.t) {
+  if (await speakTTS(s.zh, my)) return true;      // đọc bằng giọng máy được thì xong
+  for (const t of s.t) {                             // không thì ghép audio từng từ
     if (my !== token) return;
     if (!isHan(t)) { await sleep(220); continue; }
     const src = wordAudioSrc(t);
