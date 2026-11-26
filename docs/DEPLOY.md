@@ -1,6 +1,6 @@
 # Đưa Mít Xué lên mạng (Cloudflare Pages + GitHub)
 
-Mục tiêu: có địa chỉ web (vd `https://mitxue.pages.dev`) để học trên điện thoại, cài như app (PWA),
+Mục tiêu: có địa chỉ web (`https://mitxue.pages.dev`) để học trên điện thoại, cài như app (PWA),
 và đồng bộ tiến độ giữa các máy. Miễn phí.
 
 ```mermaid
