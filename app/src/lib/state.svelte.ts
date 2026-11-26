@@ -9,12 +9,23 @@ import { todayStr } from "./util";
 
 export const S: State = $state(migrate(loadRaw()));
 
-export function save(): void { persist($state.snapshot(S) as State); }
+let settingsSig = JSON.stringify([S.settings, S.theme]);
+/** Ghi tiến độ xuống máy. Cài đặt/giao diện đổi thì ghi lại thời điểm (để đồng bộ lấy bản sửa mới nhất). */
+export function save(): void {
+  const sig = JSON.stringify([S.settings, S.theme]);
+  if (sig !== settingsSig) { settingsSig = sig; S.settingsAt = Date.now(); }
+  persist($state.snapshot(S) as State);
+  onSaved?.();
+}
+/** Móc cho lib/sync: được gọi sau mỗi lần save (để hẹn đồng bộ). */
+let onSaved: (() => void) | null = null;
+export const setOnSaved = (f: () => void) => (onSaved = f);
 
 /** Thay toàn bộ tiến độ (khôi phục sao lưu / xóa làm lại). */
 export function replaceState(next: State): void {
   for (const k of Object.keys(S)) delete (S as unknown as Record<string, unknown>)[k];
   Object.assign(S, next);
+  settingsSig = JSON.stringify([S.settings, S.theme]);
   save();
 }
 export const resetState = () => replaceState(blankState());

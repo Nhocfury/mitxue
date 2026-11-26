@@ -23,6 +23,7 @@ export function blankState(today = todayStr()): State {
     settings: { newPerDay: 10, reviewMax: 150, goalMin: 60, showPy: true, rate: 1, pyMode: "auto", unlockAll: false, sfx: true },
     pron: { lessonDone: false, q: {} },
     units: {}, levels: {}, srs: {}, chars: {}, newToday: { d: "", n: 0 }, stories: {},
+    dev: newDeviceId(), xpBy: {},
   };
 }
 
@@ -65,8 +66,18 @@ export function migrate(raw: unknown, today = todayStr()): State {
   for (const [k, c] of Object.entries((r.srs as Record<string, Record<string, unknown>>) || {})) srs[k] = migrateCard(c, today);
   s.srs = srs;
   delete s.migr4; delete s.time;
+  // đồng bộ: mỗi máy có mã riêng; XP cũ coi là của máy này
+  if (typeof s.dev !== "string" || !s.dev) s.dev = newDeviceId();
+  if (!s.xpBy || typeof s.xpBy !== "object" || !Object.keys(s.xpBy).length) s.xpBy = { [s.dev]: Number(s.xp) || 0 };
+  s.xp = Object.values(s.xpBy).reduce((a, v) => a + (Number(v) || 0), 0);
   s.ver = VERSION;
   return s;
+}
+
+/** Mã máy ngẫu nhiên (8 ký tự) để tách XP theo máy khi đồng bộ. */
+export function newDeviceId(): string {
+  const a = new Uint8Array(6); globalThis.crypto?.getRandomValues?.(a);
+  return "d" + [...a].map(x => x.toString(36).padStart(2, "0")).join("").slice(0, 8);
 }
 
 /** Đọc dữ liệu thô: khóa mới trước, không có thì lấy khóa cũ. */

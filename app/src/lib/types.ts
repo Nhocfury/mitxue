@@ -98,6 +98,10 @@ export interface State {
   lastUnit?: { lv: number; u: number };
   stories: Record<string, number>;
   lastBackup?: string;
+  /** Đồng bộ: mã máy này (không đổi), XP theo từng máy (tổng = xp), lúc sửa cài đặt/giao diện gần nhất. */
+  dev?: string;
+  xpBy?: Record<string, number>;
+  settingsAt?: number;
 }
 
 declare global {

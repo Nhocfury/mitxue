@@ -15,6 +15,8 @@ export function lvOf(xp: number): { lv: number; into: number; need: number } {
 
 export function addXP(n: number): void {
   const before = lvOf(S.xp).lv;
+  const dev = S.dev ?? "?";
+  S.xpBy = { ...(S.xpBy ?? {}), [dev]: (S.xpBy?.[dev] ?? 0) + n };   // XP theo máy (đồng bộ cộng các máy lại)
   S.xp += n; markActive();
   const d = day(); d.xp = (d.xp ?? 0) + n; save();
   const after = lvOf(S.xp).lv;

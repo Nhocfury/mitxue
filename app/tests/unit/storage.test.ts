@@ -14,12 +14,16 @@ const v2 = {
 
 describe("chuyển dữ liệu cũ", () => {
   it("dữ liệu rỗng → trạng thái trắng", () => {
-    expect(migrate(null, "2026-11-26")).toEqual(blankState("2026-11-26"));
+    // mã máy (dev) ngẫu nhiên mỗi lần nên so phần còn lại
+    const { dev: d1, ...a } = migrate(null, "2026-11-26"), { dev: d2, ...b } = blankState("2026-11-26");
+    expect(a).toEqual(b);
+    expect(d1).toMatch(/^d[0-9a-z]{8}$/); expect(d2).not.toBe(d1);
   });
   it("v2 (SM-2) → v3 (FSRS), giữ ngày đến hạn và tiến độ", () => {
     const s = migrate(v2, "2026-11-26");
     expect(s.ver).toBe(3);
     expect(s.xp).toBe(182);
+    expect(s.xpBy).toEqual({ [s.dev!]: 182 });          // XP cũ thuộc về máy này
     expect(s.settings.newPerDay).toBe(10);
     expect(s.settings.goalMin).toBe(45);
     expect(s.settings.pyMode).toBe("auto");

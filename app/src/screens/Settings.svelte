@@ -1,5 +1,6 @@
 <script lang="ts">
   import { daysSinceBackup, exportBackup, importBackup } from "../lib/backup";
+  import SyncPanel from "../components/SyncPanel.svelte";
   import { voiceName } from "../lib/audio";
   import { go, router } from "../lib/router.svelte";
   import { S, save } from "../lib/state.svelte";
@@ -31,6 +32,7 @@
 <p><label><input type="checkbox" id="stSfx" bind:checked={s.sfx}> Tiếng hiệu ứng khi trả lời đúng/sai, mở rương</label></p>
 <p><label><input type="checkbox" id="stUnlock" bind:checked={s.unlockAll}> Mở khóa tất cả bài (không khuyến khích: học lướt dễ hổng gốc)</label></p>
 <div class="info">Âm thanh: mọi từ và câu trong bài đã có file đọc sẵn, chạy cả khi không có mạng. Câu nào chưa có file thì app dùng giọng đọc của trình duyệt (mở bằng <b>Microsoft Edge</b> có giọng tiếng Trung tốt). Giọng trình duyệt hiện tại: <b>{voice ?? "chưa có giọng tiếng Trung"}</b>.</div>
+<SyncPanel />
 <div class="info"><b>💾 Sao lưu tiến độ</b><br>Tiến độ lưu trong trình duyệt. Xóa lịch sử duyệt web hoặc đổi trình duyệt là mất, nên sao lưu mỗi tuần.{#if S.lastBackup} Lần gần nhất: {S.lastBackup} ({daysSinceBackup()} ngày trước).{/if}
   <div class="row" style="margin-top:6px">
     <button class="btn small" onclick={() => { exportBackup(); toast("Đã tải file sao lưu ✓"); }}>Tải file sao lưu</button>
