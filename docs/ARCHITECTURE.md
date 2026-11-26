@@ -225,9 +225,11 @@ mitxue/                         ← repo git
 | `questions.ts` | Sinh câu hỏi (dữ liệu thuần, không HTML) | `qMeaning`… `unitTestQs`, `levelTestQs`, `practiceSets`, `reviewQs` |
 | `pron.ts` | Phát âm: mẹo, câu nghe, khóa 4 bài, **chấm thanh** | `toneQ`, `soundQ`, `PRON_COURSE`, `scoreTone`, `autoCorr` |
 | `progress.ts` | XP, cấp, streak, đếm phút học | `addXP`, `lvOf`, `streak`, `logAnswer` |
+| `motivation.ts` | Nhiệm vụ ngày + rương, dải 7 ngày, sao của bài, nhắc ngủ 23:00 | `quests`, `openChest`, `lastDays`, `starsOf`, `checkBedtime` |
+| `sfx.ts` | Tiếng hiệu ứng tổng hợp bằng Web Audio (tắt được trong Cài đặt) | `sfx.ok`, `sfx.bad`, `sfx.done`, `sfx.reward` |
 | `audio.ts` | Phát audio từ, âm tiết, câu (file câu → giọng Edge → ghép) | `playWord`, `playSyl`, `playSentence`, `playAll`, `stopAudio` |
 | `router.svelte.ts` | Điều hướng theo `#/...` | `go`, `parse`, `href` |
-| `ui.svelte.ts` | Lời Mít, toast, modal, pháo giấy | `say`, `toast`, `openModal`, `confetti` |
+| `ui.svelte.ts` | Lời Mít, toast, modal, pháo giấy, bảng chúc mừng | `say`, `toast`, `openModal`, `confetti`, `celebrate` |
 | `backup.ts` | Sao lưu/khôi phục file JSON | `exportBackup`, `importBackup` |
 | `writer.ts` | Khung tập viết (hanzi-writer) | `createWriter` |
 | `startup.ts` | Sáng/tối, Mít chào | `applyTheme`, `greet` |
@@ -258,7 +260,7 @@ classDiagram
   class State {
     ver = 3
     xp, created, lastSeen
-    days: ngày → sec, q, ok
+    days: ngày → sec, q, ok, xp?, steps?, chest?, bed?
     settings: newPerDay, reviewMax, goalMin, pyMode, rate, unlockAll
     pron: lessonDone, q (điểm 4 bài)
     units: "lv:u" → UnitProgress

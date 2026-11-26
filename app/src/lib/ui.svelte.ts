@@ -10,6 +10,8 @@ export const ui = $state({
   mit: { html: "Chào Long :3", mood: "normal" as Mood },
   toast: { msg: "", show: false },
   modal: null as null | { comp: Component<any>; props: Record<string, unknown> },
+  /** Bảng chúc mừng giữa màn hình (lên cấp, mở rương…). Chỉ để nhìn, không chặn bấm. */
+  cele: null as null | { icon: string; title: string; sub: string; n: number },
 });
 
 /** Mít nói. `html` chỉ chứa chuỗi do app tự viết (có thể có <b>), không bao giờ là dữ liệu người dùng. */
@@ -26,6 +28,15 @@ export function openModal<P extends Record<string, unknown>>(comp: Component<P>,
   ui.modal = { comp: comp as Component<any>, props };
 }
 export function closeModal(): void { ui.modal = null; }
+
+let celeTimer: ReturnType<typeof setTimeout> | undefined;
+/** Chúc mừng: pháo giấy + bảng lớn giữa màn hình, tự tắt sau ~2,8 giây. */
+export function celebrate(icon: string, title: string, sub = ""): void {
+  confetti();
+  ui.cele = { icon, title, sub, n: (ui.cele?.n ?? 0) + 1 };
+  clearTimeout(celeTimer);
+  celeTimer = setTimeout(() => (ui.cele = null), 2800);
+}
 
 export function confetti(): void {
   if (typeof document === "undefined") return;

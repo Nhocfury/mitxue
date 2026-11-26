@@ -68,9 +68,12 @@ export interface UnitProgress {
 export interface Settings {
   newPerDay: number; reviewMax: number; goalMin: number;
   showPy: boolean; rate: number; pyMode: "auto" | "show" | "hide"; unlockAll: boolean;
+  sfx: boolean;           // tiếng hiệu ứng khi trả lời đúng/sai
 }
 
-export interface DayLog { sec: number; q: number; ok: number }
+/** Nhật ký 1 ngày. sec: giây học · q/ok: số câu trả lời/đúng · xp: XP trong ngày · steps: số bước bài học xong
+ *  · chest: đã mở rương nhiệm vụ · bed: đã nhắc đi ngủ (các trường mới đều tùy chọn để dữ liệu cũ vẫn hợp lệ). */
+export interface DayLog { sec: number; q: number; ok: number; xp?: number; steps?: number; chest?: boolean; bed?: boolean }
 
 export interface State {
   ver: 3;

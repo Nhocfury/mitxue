@@ -20,7 +20,7 @@ export function blankState(today = todayStr()): State {
     tones: { 1: [0, 0], 2: [0, 0], 3: [0, 0], 4: [0, 0] },
     bestCombo: 0, correct: 0, speakBest: 0, speakCount: 0, fiveDone: 0,
     lastSeen: null, theme: null,
-    settings: { newPerDay: 10, reviewMax: 150, goalMin: 60, showPy: true, rate: 1, pyMode: "auto", unlockAll: false },
+    settings: { newPerDay: 10, reviewMax: 150, goalMin: 60, showPy: true, rate: 1, pyMode: "auto", unlockAll: false, sfx: true },
     pron: { lessonDone: false, q: {} },
     units: {}, levels: {}, srs: {}, chars: {}, newToday: { d: "", n: 0 }, stories: {},
   };

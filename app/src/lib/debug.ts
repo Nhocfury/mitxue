@@ -11,5 +11,5 @@ import * as srs from "./srs";
 export const isTestMode = () => { try { return localStorage.getItem("mitxue_test") === "1"; } catch { return false; } };
 
 export function exposeDebug(): void {
-  (window as unknown as Record<string, unknown>).mitxue = { S, save, go, srs, version: "1.2.0" };
+  (window as unknown as Record<string, unknown>).mitxue = { S, save, go, srs, version: "1.3.0" };
 }

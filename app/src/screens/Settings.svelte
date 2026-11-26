@@ -28,8 +28,9 @@
 <p><label>Số thẻ ôn tối đa mỗi ngày: <input type="number" class="text" id="stMax" min="20" max="500" step="10" bind:value={s.reviewMax} style="width:90px"></label></p>
 <p><label>Tốc độ đọc audio: <select class="text" bind:value={s.rate}><option value={0.75}>Chậm</option><option value={1}>Bình thường</option><option value={1.15}>Nhanh</option></select></label></p>
 <p><label><input type="checkbox" bind:checked={s.showPy}> Hiện pinyin trong hội thoại</label></p>
+<p><label><input type="checkbox" id="stSfx" bind:checked={s.sfx}> Tiếng hiệu ứng khi trả lời đúng/sai, mở rương</label></p>
 <p><label><input type="checkbox" id="stUnlock" bind:checked={s.unlockAll}> Mở khóa tất cả bài (không khuyến khích: học lướt dễ hổng gốc)</label></p>
-<div class="info">Giọng đọc câu: mở app bằng <b>Microsoft Edge</b> (có mạng) sẽ có giọng đọc tiếng Trung tự nhiên miễn phí. Không có giọng tiếng Trung thì app ghép audio từng từ (nghe rời rạc hơn). Hiện tại: <b>{voice ?? "chưa có giọng tiếng Trung"}</b>.</div>
+<div class="info">Âm thanh: mọi từ và câu trong bài đã có file đọc sẵn, chạy cả khi không có mạng. Câu nào chưa có file thì app dùng giọng đọc của trình duyệt (mở bằng <b>Microsoft Edge</b> có giọng tiếng Trung tốt). Giọng trình duyệt hiện tại: <b>{voice ?? "chưa có giọng tiếng Trung"}</b>.</div>
 <div class="info"><b>💾 Sao lưu tiến độ</b><br>Tiến độ lưu trong trình duyệt. Xóa lịch sử duyệt web hoặc đổi trình duyệt là mất, nên sao lưu mỗi tuần.{#if S.lastBackup} Lần gần nhất: {S.lastBackup} ({daysSinceBackup()} ngày trước).{/if}
   <div class="row" style="margin-top:6px">
     <button class="btn small" onclick={() => { exportBackup(); toast("Đã tải file sao lưu ✓"); }}>Tải file sao lưu</button>

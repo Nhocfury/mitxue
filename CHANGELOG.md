@@ -1,5 +1,14 @@
 # Lịch sử phiên bản
 
+## 1.3.0 (26/11/2026): Giao diện tạo động lực
+
+- **Hôm nay**: vòng mục tiêu phút học, chuỗi ngày + dải 7 ngày (✓ có học, ★ đủ mục tiêu), **3 nhiệm vụ ngày** (1 bước bài mới · 20 câu đúng · đủ phút) và **rương +50 XP** khi xong cả 3.
+- **Lộ trình** thành con đường: bài lệch trái/phải, bài đang học nhấp nháy, mỗi bài có **1–3 sao** theo điểm kiểm tra (qua / ≥ 90% / 100%).
+- **Bài tập**: đếm combo đúng liên tiếp (thưởng +5 XP ở mốc 5/10/15/20), tiếng hiệu ứng đúng/sai/hết bài, kết quả có sao + số XP kiếm được + kỷ lục combo.
+- **Chúc mừng** giữa màn hình khi lên cấp, mở rương, đủ phút.
+- **23:00** Mít nhắc tắt màn hình đi ngủ (1 lần/đêm, chỉ nhắc, không khóa app).
+- Cài đặt: bật/tắt tiếng hiệu ứng.
+
 ## 1.2.0 (26/11/2026): HSK 3 (bài 1–10)
 
 - HSK 3 có giáo trình đầy đủ cho **bài 1–10**: hội thoại, 30 điểm ngữ pháp (把, 被, 越…越, bổ ngữ khả năng, 只要…就, 只有…才…), nghĩa tiếng Việt cho cả 506 từ.

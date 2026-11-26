@@ -5,6 +5,7 @@
   import Nav from "./components/Nav.svelte";
   import Modal from "./components/Modal.svelte";
   import Toast from "./components/Toast.svelte";
+  import Celebrate from "./components/Celebrate.svelte";
   import Home from "./screens/Home.svelte";
   import Road from "./screens/Road.svelte";
   import Lesson from "./screens/lesson/Lesson.svelte";
@@ -40,3 +41,4 @@
 </div>
 <Modal />
 <Toast />
+<Celebrate />

@@ -2,7 +2,8 @@
  * XP · CẤP ĐỘ · CHUỖI NGÀY (streak) · ĐẾM THỜI GIAN HỌC
  * ========================================================================= */
 import { S, day, markActive, save } from "./state.svelte";
-import { confetti, say } from "./ui.svelte";
+import { celebrate, say } from "./ui.svelte";
+import { sfx } from "./sfx";
 import { todayStr } from "./util";
 
 /** XP → cấp. Cấp 1 cần 100 XP, mỗi cấp sau cần thêm 20%. */
@@ -14,9 +15,13 @@ export function lvOf(xp: number): { lv: number; into: number; need: number } {
 
 export function addXP(n: number): void {
   const before = lvOf(S.xp).lv;
-  S.xp += n; markActive(); save();
+  S.xp += n; markActive();
+  const d = day(); d.xp = (d.xp ?? 0) + n; save();
   const after = lvOf(S.xp).lv;
-  if (after > before) { confetti(); say(`🎉 Lên <b>Level ${after}</b> rồi! Giỏi á, nhưng đừng tự mãn nha :))`, "happy"); }
+  if (after > before) {
+    sfx.reward(); celebrate("⭐", `Level ${after}`, "Lên cấp rồi!");
+    say(`🎉 Lên <b>Level ${after}</b> rồi! Giỏi á, nhưng đừng tự mãn nha :))`, "happy");
+  }
 }
 
 function weekKey(ds: string): string {
@@ -49,7 +54,7 @@ export function startTimeTracking(): void {
     const before = todayMinutes();
     day().sec += 15; markActive(); save();
     if (before < S.settings.goalMin && todayMinutes() >= S.settings.goalMin) {
-      confetti();
+      celebrate("⏱️", `${S.settings.goalMin} phút`, "Đủ mục tiêu hôm nay!");
       say(`Đủ <b>${S.settings.goalMin} phút</b> hôm nay rồi! 👏 Học thêm thì tốt, mệt thì nghỉ, chị duyệt :3`, "happy");
     }
   }, 15_000);
