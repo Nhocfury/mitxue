@@ -348,7 +348,7 @@ Tiến độ: Chromium/Edge dùng chung localStorage cho mọi file mở bằng 
 | `npm run check` | Kiểu TypeScript + lỗi Svelte | ~10 s |
 | `npm test` | 45 test logic: pinyin, chuyển dữ liệu, FSRS, lộ trình, câu hỏi mọi bài, chấm thanh, audio đủ file, động lực, **bộ chấm phát âm khớp bản Python 560/560** | ~3 s |
 | `npm run build` | Tạo `dist/` | ~5 s |
-| `npm run e2e` | Bot đi hết: phát âm → bài 1 → kiểm tra → ôn → từ điển → truyện → sao lưu → chuyển dữ liệu v0.4, chụp ảnh `tests/e2e/shots/`; kiểm audio câu; **micro giả** phát file wav để chấm phát âm (đúng → 100%, sai thanh → đánh dấu) | ~2 phút |
+| `npm run e2e` (in bảng ✅/❌ từng bộ) | Bot đi hết: phát âm → bài 1 → kiểm tra → ôn → từ điển → truyện → sao lưu → chuyển dữ liệu v0.4, chụp ảnh `tests/e2e/shots/`; kiểm audio câu; **micro giả** phát file wav để chấm phát âm (đúng → 100%, sai thanh → đánh dấu) | ~2 phút |
 | `npm run all` | Cả 4 lệnh trên | ~2,5 phút |
 | `npm run e2e:web` | Giả lập Cloudflare (wrangler): đồng bộ 2 máy học offline cùng lúc, mã QR, CORS file://, PWA mất mạng, khung điện thoại | ~1 phút |
 

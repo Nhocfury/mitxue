@@ -7,10 +7,10 @@
     "build": "vite build",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",
-    "e2e": "python3 tests/e2e/run_e2e.py && python3 tests/e2e/audio_check.py && python3 tests/e2e/pron_check.py",
+    "e2e": "bash tests/e2e/all.sh",
     "all": "npm run check && npm test && npm run build && npm run e2e",
     "build:pron": "node scripts/build-pron.mjs",
-    "e2e:web": "python3 tests/e2e/sync_check.py && python3 tests/e2e/pwa_check.py"
+    "e2e:web": "bash tests/e2e/all.sh web"
   },
   "devDependencies": {
     "@sherpaw/asr": "0.3.0",

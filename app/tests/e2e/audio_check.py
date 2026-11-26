@@ -16,7 +16,9 @@ FAKE = """mode => {
 }"""
 async def run(mode):
     async with async_playwright() as p:
-        b = await p.chromium.launch(); pg = await b.new_page()
+        b = await p.chromium.launch(); ctx = await b.new_context()
+        await ctx.add_init_script("localStorage.setItem('mitxue_welcomed','1')")   # bỏ màn chào tài khoản
+        pg = await ctx.new_page()
         await pg.add_init_script(f"({FAKE})({mode!r})")
         await pg.goto(URL + "#/dict"); await pg.wait_for_timeout(300)
         await pg.fill("#dq", "你们"); await pg.wait_for_timeout(200)
