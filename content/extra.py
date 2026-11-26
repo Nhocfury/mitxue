@@ -22,7 +22,7 @@ EXTRA_WORDS = {
 
 }
 # Từ của cấp cao hơn được dùng sớm trong bài (đã có nghĩa trong từ điển HSK, chỉ cho phép xuất hiện)
-PREVIEW = {"只有","最好","好多","钥匙","厨房","窗户","严重","人民币","月饼","停","警察","轻","厉害"}
+PREVIEW = {"只有","最好","好多","钥匙","厨房","窗户","严重","人民币","月饼","停","警察","轻","厉害","保护","预报","竹子","语文","语法","报告","想法","原来","博物馆","毕业","主意"}
 # Tên bộ thủ tiếng Việt (bộ thủ thường gặp)
 RADICALS = {
 "一":"nhất (số một)","丨":"cổn (nét sổ)","丶":"chủ (nét chấm)","丿":"phiệt (nét phẩy)","乙":"ất","亅":"quyết (nét móc)","二":"nhị (số hai)",

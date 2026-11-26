@@ -7,6 +7,7 @@
 0.17	我不太喜欢狗。	(ASR nghe: 我不太喜欢 gal)
 0.17	她高兴地笑了。	(ASR nghe: 他高兴的笑了)
 0.67	该你了！	(ASR nghe: daniel 了)
+0.20	请慢慢地说。	(ASR nghe: 请慢慢的说)
 1.00	杯	(ASR nghe: bev)
 0.50	点儿	(ASR nghe: de 儿)
 1.00	淋	(ASR nghe: lin)

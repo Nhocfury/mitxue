@@ -1,5 +1,12 @@
 # Lịch sử phiên bản
 
+## 1.4.0 (27/11/2026): HSK 3 đầy đủ
+
+- Soạn xong giáo trình HSK 3 **bài 11–21**: hội thoại + 33 điểm ngữ pháp mới (为了, 关于/根据, 或者/还是, 其实, 又…又…, 一…也不, 遍/次, 难/好/容易 + V, 怎么办, 是不是, 用 + vật + V, 借给/跟…借, 咱们, 跟…见面, 让 + cảm xúc, 对…满意, 挺…的, 差不多/几乎/大概, 像…一样, 以为/认为, V + 成, 受到/得到, 又/再, 到处都, 以上/以下, 得 děi/应该/需要, 最好, 地).
+- HSK 3 giờ cả 21 bài đều 6 bước.
+- Pinyin: 得 đọc **děi** khi nghĩa "phải", 还给 đọc **huán**, số đầu câu ghép liền (Shíbā).
+- 406 câu mới có audio đọc nguyên câu.
+
 ## 1.3.0 (26/11/2026): Giao diện tạo động lực
 
 - **Hôm nay**: vòng mục tiêu phút học, chuỗi ngày + dải 7 ngày (✓ có học, ★ đủ mục tiêu), **3 nhiệm vụ ngày** (1 bước bài mới · 20 câu đúng · đủ phút) và **rương +50 XP** khi xong cả 3.

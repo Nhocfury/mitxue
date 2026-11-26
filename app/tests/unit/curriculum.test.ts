@@ -48,11 +48,11 @@ describe("lộ trình", () => {
 });
 
 describe("số bước theo từng bài", () => {
-  it("bài có giáo trình 6 bước, bài chỉ có từ vựng 4 bước (HSK 3 mới soạn bài 1–10)", () => {
+  it("bài có giáo trình 6 bước, bài chỉ có từ vựng 4 bước (HSK 3 đủ 21 bài, HSK 4 chưa có)", () => {
     expect(stepsOf(1, 1)).toHaveLength(6);
     expect(stepsOf(3, 1)).toHaveLength(6);
     expect(stepsOf(3, 10)).toHaveLength(6);
-    expect(stepsOf(3, 11)).toHaveLength(4);
+    expect(stepsOf(3, 21)).toHaveLength(6);
     expect(stepsOf(4, 1)).toHaveLength(4);
   });
 });

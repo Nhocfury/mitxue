@@ -190,6 +190,9 @@ def sent_py(toks):
             tn = tone_of(re.split(r'[^a-zA-Zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜü]', first)[0])
             p = 'yí' if tn == 4 else 'yì'
         if t == '过' and prev in ('去','来','吃','喝','考','买','看','听','学','做','住','用','见','说','到','玩','坐','写','读','试','找','问','踢','打','游','跑'): p = 'guo'
+        # 得 = děi (phải) khi đứng sau chủ ngữ / phó từ, không đứng sau động từ (说得好 = de)
+        if t == '得' and (prev in PUNCT or prev == '' or prev in ('还','也','就','都','又','可','真','总','我','你','他','她','我们','你们','他们','咱们','大家','您')): p = 'děi'
+        if t == '还' and nxt == '给': p = 'huán'          # 还给 = trả lại
         if t == '只' and re.match(r'[一二两三四五六七八九十几这那哪]', prev or ''): p = 'zhī'
         if t == '不' and nxt:
             first = seg_vocab.get(nxt) or pinyin(nxt[0], style=Style.TONE)[0][0]
@@ -204,9 +207,9 @@ def sent_py(toks):
             if s and not s.endswith(' ') and not s.endswith('“'): s += ' '
             s += p
     s = re.sub(r' +', ' ', s).replace(': “', ': “').replace(' ”', '”').strip()
+    s = re.sub(r'(^|[ "])((?:(?:yī|yì|yí|èr|liǎng|sān|sì|wǔ|liù|qī|bā|jiǔ|shí|bǎi|qiān|líng)(?![a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\']) ?){2,})', lambda m: m[1] + numjoin(m[2]) + (' ' if m[2].endswith(' ') else ''), s)
     s = re.sub(r'“([a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ])', lambda m: '“' + m[1].upper(), s)
     s = re.sub(r'([.?!] )([a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ])', lambda m: m[1] + m[2].upper(), s)
-    s = re.sub(r'(^|[ "])((?:(?:yī|yì|yí|èr|liǎng|sān|sì|wǔ|liù|qī|bā|jiǔ|shí|bǎi|qiān|líng)(?![a-zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\']) ?){2,})', lambda m: m[1] + numjoin(m[2]) + (' ' if m[2].endswith(' ') else ''), s)
     return s[:1].upper() + s[1:]
 
 def numjoin(g):
