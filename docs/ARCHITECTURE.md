@@ -14,7 +14,8 @@ Có 3 khối tách biệt:
 
 | Khối | Thư mục | Viết bằng | Chạy khi nào | Sinh ra |
 |---|---|---|---|---|
-| **Nội dung** (content pipeline) | `content/` | Python | Khi sửa bài học, từ vựng | `app/public/data/*.js`, `app/public/audio/w/` |
+| **Nội dung** (content pipeline) | `content/` | Python | Khi sửa bài học, từ vựng | `app/public/data/*.js` |
+| **Âm thanh** (audio pipeline) | `content/build_audio.py` | Python + ffmpeg + sherpa-onnx | Sau khi sửa nội dung | `app/public/audio/{w,s,c,x}/`, `data/audio-index.js` |
 | **App** (frontend) | `app/src/` | TypeScript + Svelte 5 | Khi sửa giao diện, logic | `app/dist/` (bản build) |
 | **Bản cài** (deploy) | `T O O L S\MitXue\` trên máy Long | n/a | Khi học | Tiến độ trong trình duyệt (localStorage) |
 
@@ -51,6 +52,29 @@ flowchart LR
 **Vì sao không có backend?** Long học một mình trên một máy, nên lưu tiến độ ngay trong trình duyệt là đủ, chạy được cả khi mất mạng. Khi cần đồng bộ điện thoại ↔ laptop (bước 2), chỉ cần thay 2 hàm trong `app/src/lib/storage.ts` (xem mục 6).
 
 ---
+
+## 1b. Âm thanh
+
+```mermaid
+flowchart LR
+  W[Audio từ HSK<br/>hsk30/Audio] --> N
+  SY[Audio âm tiết gốc<br/>.sources/audio_s_raw] --> N
+  T[Câu trong bài + truyện<br/>từ ngoài HSK] --> TTS[Matcha zh-baker đọc câu<br/>dự phòng MeloTTS<br/>sherpa-onnx, offline] --> ASR{ASR nghe lại<br/>sai > 15% pinyin?}
+  ASR -->|đúng| N
+  ASR -->|sai| R[thử tốc độ khác,<br/>ghi audio_report.txt] --> N
+  N[Chuẩn hóa -16 LUFS<br/>đỉnh ≤ -2 dBTP<br/>mono 22,05 kHz] --> OUT[app/public/audio/<br/>w · s · c · x]
+```
+
+| Thư mục | Nội dung | Nguồn |
+|---|---|---|
+| `audio/w/` | 3.557 từ HSK | Bộ audio của đề cương HSK 3.0 |
+| `audio/s/` | 1.627 âm tiết × thanh (bảng pinyin, luyện nghe) | Bản v0.1, gốc cất ở `.sources/audio_s_raw` |
+| `audio/c/` | Mọi câu trong bài học và truyện | Matcha zh-baker (giọng nữ; dữ liệu Biaobei chỉ dùng phi thương mại), dự phòng MeloTTS (MIT); đọc chậm 0,9×. Câu trùng 1 từ HSK dùng audio người thật |
+| `audio/x/` | Từ ngoài đề cương dùng trong câu (extra.py) | Matcha / MeloTTS |
+
+**Thứ tự phát câu** (`playSentence` trong `audio.ts`): file `audio/c/` → giọng đọc của trình duyệt (Edge) → ghép audio từng từ. Cái sau chỉ dùng khi cái trước không có hoặc lỗi.
+
+**Độ lớn:** mọi file được đưa về **-16 LUFS** (chuẩn EBU R128, mức thường dùng cho giọng nói/podcast) bằng `loudnorm` 2 lượt, tăng giảm tuyến tính nên không méo tiếng. Kiểm bằng `python3 content/check_audio.py`.
 
 ## 2. Bên trong app: các lớp (layers)
 
@@ -147,6 +171,9 @@ mitxue/                         ← repo git
 │  ├─ hsk2_lessons.py           11 bài HSK 2
 │  ├─ stories.py                truyện đọc thêm
 │  ├─ extra.py                  từ ngoài đề cương dùng trong câu + tên bộ thủ
+│  ├─ build_audio.py            đọc câu bằng TTS, chuẩn hóa độ lớn mọi file
+│  ├─ check_audio.py            đo độ lớn để kiểm tra
+│  ├─ audio_report.txt          câu ASR nghe khác chữ gốc (cần nghe lại)
 │  └─ .sources/                 dữ liệu gốc tải về (không đưa vào git)
 └─ app/                         APP (Svelte 5 + TypeScript + Vite)
    ├─ index.html                khung trang, nạp data/*.js rồi app
@@ -157,6 +184,9 @@ mitxue/                         ← repo git
    │  ├─ data/pinyin.js         bảng âm tiết hợp lệ
    │  ├─ audio/w/               audio từ (tên = mã băm của chữ)
    │  ├─ audio/s/               audio âm tiết (ma1.mp3, luu4.mp3…)
+   │  ├─ audio/c/               audio đọc nguyên câu
+   │  ├─ audio/x/               audio từ ngoài HSK
+   │  ├─ data/audio-index.js    bảng tra câu/từ → file (build_audio.py sinh)
    │  ├─ MO MIT XUE.bat         mở app bằng Edge
    │  └─ HUONG DAN.txt
    ├─ src/
@@ -195,7 +225,7 @@ mitxue/                         ← repo git
 | `questions.ts` | Sinh câu hỏi (dữ liệu thuần, không HTML) | `qMeaning`… `unitTestQs`, `levelTestQs`, `practiceSets`, `reviewQs` |
 | `pron.ts` | Phát âm: mẹo, câu nghe, khóa 4 bài, **chấm thanh** | `toneQ`, `soundQ`, `PRON_COURSE`, `scoreTone`, `autoCorr` |
 | `progress.ts` | XP, cấp, streak, đếm phút học | `addXP`, `lvOf`, `streak`, `logAnswer` |
-| `audio.ts` | Phát audio từ, âm tiết, câu (giọng Edge hoặc ghép) | `playWord`, `playSyl`, `playSentence`, `playAll`, `stopAudio` |
+| `audio.ts` | Phát audio từ, âm tiết, câu (file câu → giọng Edge → ghép) | `playWord`, `playSyl`, `playSentence`, `playAll`, `stopAudio` |
 | `router.svelte.ts` | Điều hướng theo `#/...` | `go`, `parse`, `href` |
 | `ui.svelte.ts` | Lời Mít, toast, modal, pháo giấy | `say`, `toast`, `openModal`, `confetti` |
 | `backup.ts` | Sao lưu/khôi phục file JSON | `exportBackup`, `importBackup` |

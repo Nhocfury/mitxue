@@ -101,5 +101,7 @@ declare global {
     DATA: RawData;
     STROKES: Record<string, unknown>;
     SYL_RAW: string;
+    /** Do content/build_audio.py sinh: câu → file trong audio/c/, từ ngoài HSK → file trong audio/x/ */
+    AUDIO_X?: { sent: Record<string, string>; extra: Record<string, string> };
   }
 }

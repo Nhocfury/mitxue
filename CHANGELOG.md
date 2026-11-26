@@ -1,5 +1,13 @@
 # Lịch sử phiên bản
 
+## 1.1.0 (26/11/2026): Âm thanh
+
+- Mọi câu trong bài học và truyện có **file đọc nguyên câu** (TTS offline Matcha, dự phòng MeloTTS), có ngữ điệu, không ghép từng từ nữa.
+- **Chuẩn hóa độ lớn** toàn bộ ~5.800 file về -16 LUFS: không còn file to file nhỏ (trước đây âm tiết nhỏ hơn từ ~13 dB).
+- Từ ngoài đề cương HSK cũng có file đọc riêng.
+- Kiểm tra tự động: máy nhận dạng giọng nói nghe lại từng câu; test đảm bảo câu nào cũng có file.
+- Sửa: câu ví dụ im lặng khi giọng đọc của Edge lỗi.
+
 ## 1.0.0 (26/11/2026): Làm lại nền
 
 - Viết lại toàn bộ bằng **Svelte 5 + TypeScript** (trước: JavaScript thuần, ghép HTML bằng chuỗi).

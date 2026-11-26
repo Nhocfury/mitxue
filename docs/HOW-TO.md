@@ -7,7 +7,8 @@ Mỗi mục: muốn làm gì → sửa file nào → chạy lệnh gì. Sửa xo
 ### Sửa nghĩa / pinyin một từ HSK 1–2
 1. Mở `content/hsk1_words.py` (hoặc `hsk2_words.py`), tìm dòng `chữ|pinyin|nghĩa`, sửa.
 2. Chạy `python3 content/build_data.py` → sinh lại `app/public/data/data.js`.
-3. Build lại app (`npm run build`).
+3. Chạy `python3 content/build_audio.py` → đọc câu mới, chuẩn hóa âm thanh (câu cũ không đọc lại).
+4. Build lại app (`npm run build`).
 
 ### Sửa / thêm câu trong hội thoại, ví dụ ngữ pháp
 - File `content/hsk1_lessons.py` / `hsk2_lessons.py`. Mỗi bài có `dialogue` (người nói, chữ Hán, nghĩa) và `grammar` (tiêu đề, công thức, giải thích HTML, ví dụ, lưu ý).
@@ -19,6 +20,12 @@ Mỗi mục: muốn làm gì → sửa file nào → chạy lệnh gì. Sửa xo
 1. Tạo `content/hsk3_words.py` (giống `hsk2_words.py`, chia bài theo chủ đề) và `content/hsk3_lessons.py` (giống `hsk2_lessons.py`).
 2. Trong `build_data.py`: import 2 file mới, làm như khối HSK 2 (tìm `UNIT_WORDS2`, `UNITS2`), đổi `LEVEL_UNITS[3]`.
 3. App **tự nhận**: cấp nào có giáo án thì bài có đủ 6 bước (`hasLesson()` trong `data.ts`). Không cần sửa giao diện.
+
+### Âm thanh
+- Sửa/thêm câu nào thì chạy lại `content/build_audio.py`. Chỉ câu mới bị đọc lại (có bộ đệm `content/.cache/`).
+- Xem `content/audio_report.txt`: câu nào máy nhận dạng nghe khác chữ gốc thì nghe lại bằng tai. Đọc sai thì sửa cách viết câu, hoặc thêm dấu phẩy để ngắt nhịp.
+- Đổi giọng/tốc độ/độ lớn: các hằng `SPEED`, `TARGET_I` trong `build_audio.py`.
+- Kiểm độ lớn: `python3 content/check_audio.py`.
 
 ### Thêm truyện đọc
 - `content/stories.py`: `lv` (cấp), `after` (mở sau bài số mấy), `lines`, `qs` (câu hỏi, 3 lựa chọn, chỉ số đáp án đúng).
@@ -75,4 +82,4 @@ Tải 4 nguồn vào `content/.sources/`:
 | `hv/hanviet.csv` | danh sách Hán Việt – pinyin (hanviet-pinyin-wordlist) |
 | `mmah/dictionary.txt`, `graphics.txt` | github.com/skishore/makemeahanzi |
 
-Python cần: `pip install pypinyin opencc-python-reimplemented`.
+Python cần: `pip install pypinyin opencc-python-reimplemented sherpa-onnx soundfile numpy` và `ffmpeg`. Mô hình đọc (Matcha zh-baker, MeloTTS) và nhận dạng giọng nói (Paraformer) tự tải từ GitHub vào `content/.sources/models/` lần đầu chạy `build_audio.py`.

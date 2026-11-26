@@ -1,0 +1,12 @@
+# Câu ASR nghe khác chữ gốc (tỉ lệ sai > 15%). Nên nghe lại bằng tai.
+0.17	我是学生，他呢？	(ASR nghe: 我是学生哈呢)
+0.17	龙，你今年多大？	(ASR nghe: 龙龙你今年多大)
+0.20	他要去中国。	(ASR nghe: ti 要去中国)
+0.33	太好了！	(ASR nghe: 开好了)
+0.17	便宜一点儿吧！	(ASR nghe: 便宜点儿吧)
+0.17	我不太喜欢狗。	(ASR nghe: 我不太喜欢 gal)
+0.17	她高兴地笑了。	(ASR nghe: 他高兴的笑了)
+1.00	杯	(ASR nghe: bev)
+0.50	点儿	(ASR nghe: de 儿)
+1.00	王	(ASR nghe: w e n)
+1.00	李	(ASR nghe: liz)

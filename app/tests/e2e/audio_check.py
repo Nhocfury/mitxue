@@ -28,9 +28,10 @@ async def run(mode):
         await b.close(); return r
 async def main():
     fails = 0
-    for mode, want in [("none", "files"), ("silent", "files"), ("ok", "tts")]:
+    # Có file đọc nguyên câu (audio/c/) thì mọi trường hợp đều phát đúng 1 file đó, không dùng giọng máy, không ghép từ.
+    for mode in ["none", "silent", "ok"]:
         r = await run(mode)
-        ok = (len(r["played"]) > 0) if want == "files" else (r["spoken"] and not r["played"])
+        ok = len(r["played"]) == 1 and r["played"][0].startswith("audio/c/") and not r["spoken"]
         print(("✔" if ok else "✘"), mode, "→", r); fails += not ok
     sys.exit(1 if fails else 0)
 asyncio.run(main())

@@ -12,6 +12,9 @@ export const LESSONS: Lesson[] = raw.lessons;
 export const CHARS: Record<string, CharInfo> = raw.chars;
 export const EXTRA = raw.extra;
 export const AUDIO = raw.audio;
+/** File đọc nguyên câu (audio/c/) và từ ngoài HSK (audio/x/). Không có file audio-index.js thì rỗng. */
+export const SENT_AUDIO: Record<string, string> = window.AUDIO_X?.sent ?? {};
+export const EXTRA_AUDIO: Record<string, string> = window.AUDIO_X?.extra ?? {};
 export const STORIES: Story[] = raw.stories;
 export const LEVELS = [1, 2, 3, 4, 5] as const;
 export const unitCount = (lv: number): number => raw.levelUnits[String(lv)] || 0;

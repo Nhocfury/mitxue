@@ -13,7 +13,9 @@ g.localStorage = {
   key: (i: number) => [...mem.keys()][i] ?? null,
   get length() { return mem.size; },
 };
-for (const f of ["data.js", "pinyin.js"]) {
+import { existsSync } from "node:fs";
+for (const f of ["data.js", "pinyin.js", "audio-index.js"]) {
+  if (!existsSync(resolve(__dirname, "../../public/data", f))) continue;
   // eslint-disable-next-line no-new-func
   new Function(readFileSync(resolve(__dirname, "../../public/data", f), "utf8"))();
 }

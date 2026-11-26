@@ -2,12 +2,13 @@
  * ÂM THANH
  * - Từ: file thu sẵn public/audio/w/<mã>.mp3 (bảng tra trong DATA.audio).
  * - Âm tiết: public/audio/s/<âm trần><thanh>.mp3 (vd ma3.mp3, luu4.mp3).
- * - Câu: ưu tiên giọng tiếng Trung của trình duyệt (Edge có giọng "Natural"
- *   miễn phí khi có mạng); không có thì ghép audio từng từ.
+ * - Câu: file đọc nguyên câu public/audio/c/ (MeloTTS, xem content/build_audio.py);
+ *   không có file thì dùng giọng tiếng Trung của trình duyệt; cuối cùng mới ghép từng từ.
+ * - Mọi file đã chuẩn hóa cùng độ lớn -16 LUFS (build_audio.py).
  * Mỗi lần phát mới sẽ dừng cái đang phát (biến `token`), nên bấm liên tục
  * không bị chồng tiếng.
  * ========================================================================= */
-import { AUDIO, pinyinOfToken } from "./data";
+import { AUDIO, EXTRA_AUDIO, SENT_AUDIO, pinyinOfToken } from "./data";
 import { SYL, plainSyl, splitSyl, hasPyLetter } from "./pinyin";
 import { touch } from "./progress";
 import { S } from "./state.svelte";
@@ -31,7 +32,9 @@ function playFile(src: string, rate = 1): Promise<boolean> {
   });
 }
 
-export const wordAudioSrc = (c: string): string | null => (AUDIO[c] ? "audio/w/" + AUDIO[c] : null);
+export const wordAudioSrc = (c: string): string | null =>
+  AUDIO[c] ? "audio/w/" + AUDIO[c] : EXTRA_AUDIO[c] ? "audio/x/" + EXTRA_AUDIO[c] : null;
+export const sentAudioSrc = (zh: string): string | null => (SENT_AUDIO[zh] ? "audio/c/" + SENT_AUDIO[zh] : null);
 export const sylAudioSrc = (b: string, t: number) => `audio/s/${b}${t}.mp3`;
 
 export function playSyl(b: string, t: number): Promise<boolean> { stopAudio(); touch(); return playFile(sylAudioSrc(b, t)); }
@@ -97,8 +100,11 @@ export async function playWord(c: string): Promise<unknown> {
 /** Đọc một câu. */
 export async function playSentence(s: Pick<Sentence, "zh" | "t">): Promise<unknown> {
   stopAudio(); touch(); const my = token;
-  if (await speakTTS(s.zh, my)) return true;      // đọc bằng giọng máy được thì xong
-  for (const t of s.t) {                             // không thì ghép audio từng từ
+  const file = sentAudioSrc(s.zh);                 // 1) file đọc nguyên câu (có ngữ điệu thật)
+  if (file && await playFile(file, S.settings.rate)) return true;
+  if (my !== token) return;
+  if (await speakTTS(s.zh, my)) return true;      // 2) giọng đọc của trình duyệt
+  for (const t of s.t) {                             // 3) cuối cùng mới ghép audio từng từ
     if (my !== token) return;
     if (!isHan(t)) { await sleep(220); continue; }
     const src = wordAudioSrc(t);
