@@ -45,3 +45,10 @@
 <Toast />
 <Celebrate />
 {#if ui.welcome}<Welcome />{/if}
+{#if ui.update}
+  <button class="upd" id="updBtn" onclick={() => location.reload()}>✨ Có bản Mít Xué mới · bấm để tải lại</button>
+{/if}
+
+<style>
+  .upd{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:95;background:var(--red);color:#fff;border:none;border-radius:99px;padding:10px 18px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer}
+</style>

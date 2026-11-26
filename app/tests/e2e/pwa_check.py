@@ -45,6 +45,18 @@ async def main():
             check(st == 200, f"mất mạng: audio đã nghe vẫn phát được ({st})")
             wide = await pg.evaluate("()=>document.documentElement.scrollWidth <= window.innerWidth + 1")
             check(wide, "khung điện thoại: không bị tràn ngang")
+            # cập nhật phiên bản: đổi BUILD trong sw.js như khi Cloudflare build bản mới → app tự nhận
+            await ctx.set_offline(False)
+            swp = APP / "dist" / "sw.js"; old = swp.read_text()
+            import re as _re
+            swp.write_text(_re.sub(r'const BUILD = "[^"]+"', 'const BUILD = "testupdate"', old))
+            try:
+                await pg.goto(BASE); await pg.wait_for_timeout(4000)
+                keys = await pg.evaluate("async()=>caches.keys()")
+                check("mitxue-shell-testupdate" in keys and not any(k.startswith("mitxue-shell-") and k != "mitxue-shell-testupdate" for k in keys),
+                      f"bản mới: service worker mới nắm quyền, xóa vỏ app cũ ({keys})")
+            finally:
+                swp.write_text(old)
             check(not errs, "không lỗi JS " + str(errs[:2]))
             await b.close()
     finally:

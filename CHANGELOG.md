@@ -7,6 +7,7 @@
 - Bỏ phần "may đo" cho Long: Mít gọi đúng tên từng người; giờ nhắc ngủ tự chọn (21:00 → 0:00 hoặc không nhắc) trong màn chào và Cài đặt.
 - Đồng bộ gom 3 phút/lần để cả nhóm ~10 người vẫn trong 1.000 lượt ghi KV/ngày.
 - Gỡ thư mục giả lập `.wrangler` khỏi repo; test giả lập dùng kho tạm riêng mỗi lần chạy.
+- Có bản mới: app vừa mở thì tự tải lại; đang học dở thì hiện nút "Có bản Mít Xué mới · bấm để tải lại".
 
 ## 1.6.0 (27/11/2026): Đồng bộ + sẵn sàng lên mạng
 

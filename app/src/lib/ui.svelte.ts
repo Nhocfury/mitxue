@@ -14,6 +14,8 @@ export const ui = $state({
   cele: null as null | { icon: string; title: string; sub: string; n: number },
   /** Màn chào: tạo tài khoản / đăng nhập (máy mới chưa đăng nhập). */
   welcome: false,
+  /** Đã tải bản app mới, chờ em tải lại trang. */
+  update: false,
 });
 
 /** Mít nói. `html` chỉ chứa chuỗi do app tự viết (có thể có <b>), không bao giờ là dữ liệu người dùng. */
