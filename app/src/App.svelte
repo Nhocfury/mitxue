@@ -6,6 +6,8 @@
   import Modal from "./components/Modal.svelte";
   import Toast from "./components/Toast.svelte";
   import Celebrate from "./components/Celebrate.svelte";
+  import Welcome from "./components/Welcome.svelte";
+  import { ui } from "./lib/ui.svelte";
   import Home from "./screens/Home.svelte";
   import Road from "./screens/Road.svelte";
   import Lesson from "./screens/lesson/Lesson.svelte";
@@ -42,3 +44,4 @@
 <Modal />
 <Toast />
 <Celebrate />
+{#if ui.welcome}<Welcome />{/if}

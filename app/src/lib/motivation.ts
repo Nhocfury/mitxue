@@ -6,8 +6,9 @@
 import { addXP } from "./progress";
 import { sfx } from "./sfx";
 import { S, day, save } from "./state.svelte";
-import { celebrate, say, toast } from "./ui.svelte";
+import { celebrate, say, toast, ui } from "./ui.svelte";
 import { todayStr } from "./util";
+import { who } from "./who";
 
 /* ---------------- nhiệm vụ ngày ---------------- */
 export interface Quest { id: string; icon: string; label: string; cur: number; need: number; done: boolean }
@@ -54,19 +55,24 @@ export function starsOf(best: number, pass = 80): number {
   return best >= 100 ? 3 : best >= 90 ? 2 : 1;
 }
 
-/* ---------------- nhắc giờ ngủ (luật của Long: tắt màn hình 23:00) ---------------- */
-export const BED_HOUR = 23;
-export const isBedtime = (now = new Date()) => now.getHours() >= BED_HOUR || now.getHours() < 5;
+/* ---------------- nhắc giờ ngủ (mỗi người tự đặt giờ, mặc định 23:00; null = không nhắc) ---------------- */
+export const bedHour = (): number | null => S.settings.bedHour;
+/** Khung "giờ ngủ": từ bedHour tới 5 giờ sáng. Đặt sau nửa đêm (0–4 giờ) thì chỉ tính từ giờ đó tới 5 giờ. */
+export function isBedtime(now = new Date(), bh: number | null = bedHour()): boolean {
+  if (bh === null) return false;
+  const h = now.getHours();
+  return bh >= 5 ? h >= bh || h < 5 : h >= bh && h < 5;
+}
 
 /** Đến giờ ngủ thì Mít nhắc 1 lần mỗi đêm. Chỉ nhắc, không khóa app: quyết định vẫn là của em. */
 export function checkBedtime(now = new Date()): boolean {
-  if (!isBedtime(now)) return false;
+  if (ui.welcome || !isBedtime(now)) return false;      // đang ở màn chào (chưa chọn giờ ngủ) thì chưa nhắc
   // sau nửa đêm vẫn tính là "đêm hôm trước" để không nhắc 2 lần
   const d = new Date(now); if (now.getHours() < 5) d.setDate(d.getDate() - 1);
   const log = day(todayStr(d));
   if (log.bed) return false;
   log.bed = true; save();
-  say(`${now.getHours() >= BED_HOUR ? "23 giờ" : "Quá nửa đêm"} rồi đó Long. Luật em tự đặt: <b>tắt màn hình đi ngủ</b>. Mai học tiếp, chị giữ chỗ cho :3`, "smirk");
+  say(`${now.getHours() >= (bedHour() ?? 24) ? `${bedHour()} giờ` : "Quá nửa đêm"} rồi đó ${who()}. Giờ ngủ em tự đặt: <b>tắt màn hình đi ngủ</b>. Mai học tiếp, chị giữ chỗ cho :3`, "smirk");
   toast("🌙 Tới giờ đi ngủ rồi nha");
   return true;
 }

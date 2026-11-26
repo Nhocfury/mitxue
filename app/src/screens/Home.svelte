@@ -36,7 +36,7 @@
 
 <section>
   {#if late}
-    <div class="card night">🌙 Khuya rồi. Luật của em: <b>23:00 tắt màn hình</b>. Ôn vài thẻ cho xong rồi đi ngủ nha, mai học tiếp.</div>
+    <div class="card night">🌙 Khuya rồi. Giờ ngủ em đặt: <b>{S.settings.bedHour}:00 tắt màn hình</b>. Ôn vài thẻ cho xong rồi đi ngủ nha, mai học tiếp.</div>
   {/if}
 
   <div class="card today">

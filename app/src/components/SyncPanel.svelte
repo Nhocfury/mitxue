@@ -2,7 +2,7 @@
 <script lang="ts">
   import qrcode from "qrcode-generator";
   import { apiUrl, connect, disconnect, newCode, normalizeCode, shareLink, sync, syncNow } from "../lib/sync.svelte";
-  import { toast } from "../lib/ui.svelte";
+  import { toast, ui, closeModal } from "../lib/ui.svelte";
 
   let input = $state("");
   let showCode = $state(false);
@@ -25,7 +25,7 @@
     if (await connect(c)) { input = ""; toast("Đã nối với máy kia, tiến độ đã gộp ✓"); }
   }
   function off() {
-    if (!confirm("Ngắt đồng bộ trên máy này? Tiến độ trên máy vẫn giữ nguyên. Muốn nối lại thì nhập lại mã.")) return;
+    if (!confirm(sync.name ? "Đăng xuất trên máy này? Tiến độ trên máy vẫn giữ nguyên. Đăng nhập lại bằng tên + mật khẩu." : "Ngắt đồng bộ trên máy này? Tiến độ trên máy vẫn giữ nguyên. Muốn nối lại thì nhập lại mã.")) return;
     disconnect(); toast("Đã ngắt đồng bộ trên máy này");
   }
   async function copy() {
@@ -38,15 +38,17 @@
   {#if !ready}
     <p>Cần đưa app lên mạng trước (đang làm). Xong thì em học được trên điện thoại, tiến độ tự gộp giữa các máy.</p>
   {:else if !sync.code}
-    <p>Học trên máy tính và điện thoại chung một tiến độ. Không cần tài khoản: app tạo một <b>mã đồng bộ</b> bí mật, máy nào nhập cùng mã thì chung tiến độ.</p>
+    <p>Học ở máy nào cũng chung một tiến độ. Cách dễ nhất: <b>tài khoản tên + mật khẩu</b>. Hoặc dùng mã đồng bộ ngẫu nhiên.</p>
     <div class="row">
-      <button class="btn small" id="syncCreate" disabled={sync.status === "busy"} onclick={create}>Tạo mã (máy đầu tiên)</button>
+      <button class="btn small" id="syncAccount" onclick={() => { closeModal(); ui.welcome = true; }}>👤 Tạo tài khoản / đăng nhập</button>
+      <button class="btn ghost small" id="syncCreate" disabled={sync.status === "busy"} onclick={create}>Tạo mã ngẫu nhiên</button>
     </div>
     <div class="row" style="margin-top:8px">
       <input class="text" id="syncInput" placeholder="MX-XXXXX-XXXXX-XXXXX-XXXXX" bind:value={input} style="flex:1;min-width:220px;font-family:monospace" />
       <button class="btn ghost small" id="syncJoin" disabled={sync.status === "busy"} onclick={join}>Nối với máy khác</button>
     </div>
   {:else}
+    {#if sync.name}<p>👤 Tài khoản: <b id="syncName">{sync.name}</b></p>{/if}
     <p class="st" data-sync-status={sync.status}>
       {#if sync.status === "busy"}⏳ Đang đồng bộ…
       {:else if sync.status === "error"}⚠️ {sync.msg}
@@ -55,8 +57,8 @@
     </p>
     <div class="row">
       <button class="btn small" id="syncNow" disabled={sync.status === "busy"} onclick={() => syncNow()}>Đồng bộ ngay</button>
-      <button class="btn ghost small" onclick={() => (showCode = !showCode)}>{showCode ? "Ẩn mã" : "Xem mã / QR"}</button>
-      <button class="btn ghost small" id="syncOff" onclick={off}>Ngắt trên máy này</button>
+      <button class="btn ghost small" onclick={() => (showCode = !showCode)}>{showCode ? "Ẩn mã" : sync.name ? "QR thêm máy nhanh" : "Xem mã / QR"}</button>
+      <button class="btn ghost small" id="syncOff" onclick={off}>{sync.name ? "Đăng xuất trên máy này" : "Ngắt trên máy này"}</button>
     </div>
     {#if showCode}
       <div class="codebox">

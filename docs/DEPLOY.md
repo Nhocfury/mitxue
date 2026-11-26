@@ -25,7 +25,12 @@ flowchart LR
    - Environment variable: `NODE_VERSION` = `22`
    - Bấm *Save and Deploy* (lần đầu ~3–5 phút).
 5. **Gắn KV**: vào trang vừa tạo → Settings → **Bindings** → Add → *KV namespace*: tên biến `SYNC`, chọn `mitxue-sync` → Save → Deployments → *Retry deployment* (để API nhận KV).
-6. Mở địa chỉ `https://<tên>.pages.dev` → Cài đặt ⚙️ → **Tạo mã** → quét QR bằng điện thoại.
+6. Mở `https://mitxue.pages.dev` → màn chào → **Bắt đầu mới** (tên + mật khẩu). Máy khác: **Đã có tài khoản** và nhập lại, hoặc quét QR ở Cài đặt → 🔄.
+
+## Mời bạn bè (≤ 10 người)
+
+Gửi link `https://mitxue.pages.dev`. Mỗi người tự tạo tài khoản riêng (tên + mật khẩu). Không ai xem được tiến độ người khác nếu không biết đúng tên + mật khẩu.
+Giới hạn: KV miễn phí 1.000 lượt ghi/ngày cho cả nhóm (≈ 50 giờ học/ngày cộng lại). Đông hơn thì chuyển sang D1 hoặc gói Workers Paid.
 
 ## Sau đó
 

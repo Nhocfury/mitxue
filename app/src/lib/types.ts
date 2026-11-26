@@ -70,6 +70,8 @@ export interface Settings {
   newPerDay: number; reviewMax: number; goalMin: number;
   showPy: boolean; rate: number; pyMode: "auto" | "show" | "hide"; unlockAll: boolean;
   sfx: boolean;           // tiếng hiệu ứng khi trả lời đúng/sai
+  name: string;           // tên người học (Mít gọi tên); "" = chưa đặt
+  bedHour: number | null; // giờ nhắc đi ngủ (0–23), null = không nhắc
 }
 
 /** Nhật ký 1 ngày. sec: giây học · q/ok: số câu trả lời/đúng · xp: XP trong ngày · steps: số bước bài học xong

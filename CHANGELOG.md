@@ -1,5 +1,13 @@
 # Lịch sử phiên bản
 
+## 1.7.0 (27/11/2026): Cho nhóm ~10 người
+
+- **Màn chào lần đầu**: tạo tài khoản bằng **tên + mật khẩu** (kèm mục tiêu phút/ngày, giờ nhắc ngủ) hoặc **đăng nhập** để lấy tiến độ từ máy khác. Có thể bỏ qua, chỉ học trên máy này.
+- Tên + mật khẩu → mã đồng bộ bằng PBKDF2-SHA256 (200.000 vòng) ngay trên máy; máy chủ không biết tên hay mật khẩu. Tạo trùng tài khoản bị chặn; sai mật khẩu báo rõ.
+- Bỏ phần "may đo" cho Long: Mít gọi đúng tên từng người; giờ nhắc ngủ tự chọn (21:00 → 0:00 hoặc không nhắc) trong màn chào và Cài đặt.
+- Đồng bộ gom 3 phút/lần để cả nhóm ~10 người vẫn trong 1.000 lượt ghi KV/ngày.
+- Gỡ thư mục giả lập `.wrangler` khỏi repo; test giả lập dùng kho tạm riêng mỗi lần chạy.
+
 ## 1.6.0 (27/11/2026): Đồng bộ + sẵn sàng lên mạng
 
 - **Đồng bộ nhiều máy** (Cài đặt → 🔄): tạo mã đồng bộ, quét QR trên điện thoại là nối. Không cần tài khoản.

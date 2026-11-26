@@ -7,11 +7,14 @@
   import { closeModal, toast } from "../lib/ui.svelte";
   import { href } from "../lib/router.svelte";
   const s = $state({ ...S.settings });
+  let bed = $state(s.bedHour === null ? "off" : String(s.bedHour));
   const voice = voiceName();
   function apply() {
     s.goalMin = Math.min(240, Math.max(10, +s.goalMin || 60));
     s.newPerDay = Math.min(40, Math.max(3, +s.newPerDay || 10));
     s.reviewMax = Math.min(500, Math.max(20, +s.reviewMax || 150));
+    s.name = (s.name || "").trim().slice(0, 30);
+    s.bedHour = bed === "off" ? null : Number(bed);
     Object.assign(S.settings, s); save(); closeModal(); toast("Đã lưu ✓"); go(href(router.route));
   }
   async function restore(e: Event) {
@@ -22,6 +25,8 @@
 </script>
 
 <h2>⚙️ Cài đặt</h2>
+<p><label>Tên (Mít gọi em là): <input class="text" id="stName" maxlength="30" bind:value={s.name} style="width:160px"></label></p>
+<p><label>Nhắc đi ngủ lúc: <select class="text" id="stBed" bind:value={bed}><option value="off">Không nhắc</option><option value="21">21:00</option><option value="22">22:00</option><option value="23">23:00</option><option value="0">0:00</option></select></label></p>
 <p><label>Mục tiêu mỗi ngày: <input type="number" class="text" id="stGoal" min="10" max="240" step="5" bind:value={s.goalMin} style="width:90px"> phút</label></p>
 <p><label>Số từ mới tối đa mỗi ngày: <input type="number" class="text" id="stNew" min="3" max="40" bind:value={s.newPerDay} style="width:90px"></label> <span class="muted">(khuyên 8–12)</span></p>
 <p><label>Pinyin trong câu: <select class="text" id="stPyM" bind:value={s.pyMode}>

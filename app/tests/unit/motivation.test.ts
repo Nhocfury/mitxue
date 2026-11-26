@@ -51,3 +51,14 @@ describe("nhắc giờ ngủ", () => {
     expect(isBedtime(new Date(2026, 10, 27, 5, 0))).toBe(false);
   });
 });
+
+describe("giờ ngủ theo từng người", () => {
+  it("không nhắc khi tắt; đặt 22h hay 0h đều đúng khung", () => {
+    expect(isBedtime(new Date(2026, 10, 26, 23, 30), null)).toBe(false);
+    expect(isBedtime(new Date(2026, 10, 26, 22, 5), 22)).toBe(true);
+    expect(isBedtime(new Date(2026, 10, 26, 21, 59), 22)).toBe(false);
+    expect(isBedtime(new Date(2026, 10, 26, 23, 30), 0)).toBe(false);
+    expect(isBedtime(new Date(2026, 10, 27, 0, 30), 0)).toBe(true);
+    expect(isBedtime(new Date(2026, 10, 27, 12, 0), 0)).toBe(false);
+  });
+});

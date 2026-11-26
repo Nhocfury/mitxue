@@ -20,7 +20,7 @@ export function blankState(today = todayStr()): State {
     tones: { 1: [0, 0], 2: [0, 0], 3: [0, 0], 4: [0, 0] },
     bestCombo: 0, correct: 0, speakBest: 0, speakCount: 0, fiveDone: 0,
     lastSeen: null, theme: null,
-    settings: { newPerDay: 10, reviewMax: 150, goalMin: 60, showPy: true, rate: 1, pyMode: "auto", unlockAll: false, sfx: true },
+    settings: { newPerDay: 10, reviewMax: 150, goalMin: 60, showPy: true, rate: 1, pyMode: "auto", unlockAll: false, sfx: true, name: "", bedHour: 23 },
     pron: { lessonDone: false, q: {} },
     units: {}, levels: {}, srs: {}, chars: {}, newToday: { d: "", n: 0 }, stories: {},
     dev: newDeviceId(), xpBy: {},
@@ -57,6 +57,8 @@ export function migrate(raw: unknown, today = todayStr()): State {
   if (r.ver !== VERSION && s.settings.newPerDay === 15) s.settings.newPerDay = 10; // mặc định cũ quá cao
   if (!["auto", "show", "hide"].includes(s.settings.pyMode)) s.settings.pyMode = "auto";
   s.settings.unlockAll = !!s.settings.unlockAll;
+  if (typeof s.settings.name !== "string") s.settings.name = "";
+  if (s.settings.bedHour !== null && !(Number.isInteger(s.settings.bedHour) && s.settings.bedHour >= 0 && s.settings.bedHour <= 23)) s.settings.bedHour = 23;
   s.pron = { ...b.pron, ...((r.pron as object) || {}) };
   s.pron.q = s.pron.q || {};
   s.tones = { ...b.tones, ...((r.tones as object) || {}) };

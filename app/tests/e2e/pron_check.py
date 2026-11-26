@@ -22,10 +22,11 @@ async def run(wav: str):
         b = await p.chromium.launch(args=["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream",
                                           f"--use-file-for-fake-audio-capture={FIX / wav}%noloop", "--autoplay-policy=no-user-gesture-required"])
         ctx = await b.new_context(); await ctx.grant_permissions(["microphone"])
+        await ctx.add_init_script("localStorage.setItem('mitxue_welcomed','1')")   # bỏ màn chào tài khoản
         pg = await ctx.new_page(); errs = []
         pg.on("pageerror", lambda e: errs.append(str(e)))
         await pg.goto(URL); await pg.wait_for_timeout(300)
-        await pg.evaluate("()=>{mitxue.S.settings.unlockAll=true; mitxue.save();}")
+        await pg.evaluate("()=>{localStorage.setItem('mitxue_welcomed','1'); mitxue.S.settings.unlockAll=true; mitxue.save();}")
         await pg.goto(URL + "#/lesson/1/2/dialogue"); await pg.wait_for_timeout(500)
         t = time.time()
         await pg.locator("[data-speak='2']").click()

@@ -12,7 +12,7 @@ def check(c, m):
     if not c: FAILS.append(m)
 
 async def main():
-    srv = subprocess.Popen(["npx", "wrangler", "pages", "dev", "dist", "--kv", "SYNC", "--port", str(PORT), "--ip", "127.0.0.1"],
+    srv = subprocess.Popen(["npx", "wrangler", "pages", "dev", "dist", "--kv", "SYNC", "--port", str(PORT), "--ip", "127.0.0.1", "--persist-to", __import__("tempfile").mkdtemp(prefix="mitxue-kv-")],
                            cwd=APP, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     for _ in range(60):
         try: urllib.request.urlopen(BASE); break

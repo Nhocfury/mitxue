@@ -7,7 +7,8 @@ import { startTimeTracking } from "./lib/progress";
 import { applyTheme, greet } from "./lib/startup";
 import { exposeDebug, isTestMode } from "./lib/debug";
 import { startBedtimeWatch } from "./lib/motivation";
-import { startSync } from "./lib/sync.svelte";
+import { needWelcome, startSync } from "./lib/sync.svelte";
+import { ui } from "./lib/ui.svelte";
 
 applyTheme();
 startRouter();
@@ -15,7 +16,7 @@ startTimeTracking();
 greet();
 if (!isTestMode()) startBedtimeWatch();   // test tự động chạy lúc nào cũng được, không nhắc ngủ
 exposeDebug();
-if (!isTestMode()) startSync();
+if (!isTestMode()) { startSync(); if (needWelcome()) ui.welcome = true; }
 mount(App, { target: document.getElementById("app")! });
 
 // Bản trên mạng: đăng ký service worker (cài như app, học offline). Bản file:// bỏ qua.
