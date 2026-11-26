@@ -7,7 +7,7 @@ Mỗi mục: muốn làm gì → sửa file nào → chạy lệnh gì. Sửa xo
 ### Sửa nghĩa / pinyin một từ HSK 1–2
 1. Mở `content/hsk1_words.py` (hoặc `hsk2_words.py`), tìm dòng `chữ|pinyin|nghĩa`, sửa.
 2. Chạy `python3 content/build_data.py` → sinh lại `app/public/data/data.js`.
-3. Chạy `python3 content/build_audio.py` → đọc câu mới, chuẩn hóa âm thanh (câu cũ không đọc lại).
+3. **Luôn** chạy `python3 content/build_audio.py` sau bước 2 → chép + chuẩn hóa audio từ, đọc câu mới (câu cũ không đọc lại), ghi `content/audio_manifest.json`. Quên bước này thì `npm test` sẽ báo.
 4. Build lại app (`npm run build`).
 
 ### Sửa / thêm câu trong hội thoại, ví dụ ngữ pháp

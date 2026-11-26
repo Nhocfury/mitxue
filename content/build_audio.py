@@ -203,6 +203,10 @@ def main():
 
     (APP / "data" / "audio-index.js").write_text(
         "window.AUDIO_X=" + json.dumps({"sent": sent_map, "extra": extra_map}, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf8")
+    # Dấu vân tay: kích thước mọi file đã chuẩn hóa. Test (audiofiles.test.ts) so lại để bắt trường hợp
+    # file bị thay bằng bản chưa chuẩn hóa (vd chép đè audio gốc).
+    man = {d: {f.name: f.stat().st_size for f in sorted((APP / "audio" / d).glob("*.mp3"))} for d in ("w", "s", "c", "x")}
+    (ROOT / "audio_manifest.json").write_text(json.dumps(man, separators=(",", ":")), encoding="utf8")
     (ROOT / "audio_report.txt").write_text(
         "# Câu ASR nghe khác chữ gốc (tỉ lệ sai > 15%). Nên nghe lại bằng tai.\n" + "\n".join(report) + "\n", encoding="utf8")
     print(f"xong · câu {len(sent_map)} · từ ngoài HSK {len(extra_map)} · cần nghe lại {len(report)} câu (content/audio_report.txt)")

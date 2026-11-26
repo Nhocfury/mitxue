@@ -8,6 +8,7 @@
 - Luôn có nút tự chấm: micro hỏng hoặc máy nghe nhầm vẫn đi tiếp được.
 - Dữ liệu: thêm pinyin từng chữ `sy` cho 988 câu, 3.657 từ. Sửa 得了 đọc **dé** (trước nhầm děi).
 - Test: bộ chấm TypeScript khớp bản Python 560/560 mẫu; e2e micro giả.
+- Sửa quy trình build: `build_data.py` không còn chép audio gốc đè lên bản đã chuẩn hóa; thêm `content/audio_manifest.json` + test bắt lỗi này.
 
 ## 1.4.0 (27/11/2026): HSK 3 đầy đủ
 

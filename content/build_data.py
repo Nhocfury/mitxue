@@ -341,16 +341,14 @@ extra["越南"]["vi"] = "Việt Nam"; extra["北京"]["vi"] = "Bắc Kinh"; extr
 strokes = {ch: gfx[ch] for ch in chars if ch in gfx}
 
 # ---------- audio ----------
+# Chỉ ĐẶT TÊN file. Chép + chuẩn hóa âm lượng là việc của build_audio.py (chạy sau file này).
+# (Trước 27/11/2026 file này chép audio gốc vào audio/w, đè mất bản đã chuẩn hóa nếu quên chạy build_audio.)
 import hashlib
-shutil.rmtree(f'{APP}/audio/w', ignore_errors=True)
-os.makedirs(f'{APP}/audio/w', exist_ok=True)
 amap = {}
 for k, e in words.items():
     if e['a'] and e['c'] not in amap:
-        src = f"{H}/Audio/cmn-{e['c']}.mp3"
-        fn = "w" + hashlib.md5(e['c'].encode('utf8')).hexdigest()[:10] + ".mp3"
-        shutil.copyfile(src, f"{APP}/audio/w/{fn}")
-        amap[e['c']] = fn
+        assert os.path.exists(f"{H}/Audio/cmn-{e['c']}.mp3"), e['c']
+        amap[e['c']] = "w" + hashlib.md5(e['c'].encode('utf8')).hexdigest()[:10] + ".mp3"
 
 # ---------- level meta / roadmap ----------
 gram_titles = {}

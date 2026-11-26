@@ -17,3 +17,17 @@ describe("file âm thanh câu", () => {
     for (const f of Object.values(EXTRA_AUDIO)) expect(existsSync(pub("audio/x/" + f))).toBe(true);
   });
 });
+
+describe("âm thanh đã chuẩn hóa (-16 LUFS)", () => {
+  it("mọi file khớp dấu vân tay của build_audio.py (không bị chép đè bằng bản chưa chuẩn hóa)", async () => {
+    const { readFileSync, readdirSync, statSync } = await import("node:fs");
+    const man = JSON.parse(readFileSync(resolve(__dirname, "../../../content/audio_manifest.json"), "utf8")) as Record<string, Record<string, number>>;
+    const bad: string[] = [];
+    for (const [d, files] of Object.entries(man)) {
+      const onDisk = readdirSync(pub("audio/" + d)).filter(f => f.endsWith(".mp3"));
+      if (onDisk.length !== Object.keys(files).length) bad.push(`${d}: ${onDisk.length} file trên đĩa, manifest ${Object.keys(files).length}`);
+      for (const f of onDisk) if (statSync(pub(`audio/${d}/${f}`)).size !== files[f]) bad.push(`${d}/${f}`);
+    }
+    expect(bad.slice(0, 5), "chạy lại: python3 content/build_audio.py").toEqual([]);
+  });
+});
